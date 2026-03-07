@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LamdaGames</title>
+    <title>LamdaGames Tanfojze</title>
     <style>
         * {
             margin: 0;
@@ -27,7 +27,6 @@
             color: #222;
         }
 
-        /* ========== 顶部标题栏 ========== */
         .top-bar {
             position: fixed;
             top: 0; left: 0; right: 0;
@@ -44,11 +43,19 @@
         }
 
         .logo {
-            width: 32px; height: 32px;
-            background: #4488ff; border-radius: 8px;
-            display: grid; place-items: center;
-            font-weight: bold; margin-right: 10px;
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            overflow: hidden;
+            margin-right: 10px;
         }
+        .logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
         .title-group {
             display: flex; align-items: center; gap: 8px;
         }
@@ -77,7 +84,6 @@
             font-size: 20px;
         }
 
-        /* ========== 顶部内容 ========== */
         .header {
             padding-top: 70px;
             min-height: 100vh;
@@ -96,7 +102,6 @@
         }
         body.light .slogan { color: #666; }
 
-        /* 搜索框 */
         .search-row {
             width: 100%; max-width: 420px;
             display: flex; gap: 10px;
@@ -122,7 +127,6 @@
             background: #fff; color: #222;
         }
 
-        /* ========== 快捷方式 ========== */
         .shortcuts {
             width: 100%; max-width: 420px;
             display: flex; gap: 10px;
@@ -142,36 +146,45 @@
             background: #fff; color: #444;
         }
 
-        /* 上滑提示 */
         .scroll-tip {
             font-size: 12px; color: #888;
             margin-bottom: 20px;
         }
 
-        /* ========== 横向轮播 ========== */
+        /* ========== 修复：可横向滑动 + 居中吸附 ========== */
         .carousel {
-            width: 100%; max-width: 420px;
+            width: 100%;
+            max-width: 420px;
             height: 180px;
             position: relative;
-            display: flex; justify-content: center;
-            align-items: center; gap: 12px;
-            overflow: hidden;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0 calc(50% - 140px);
+            overflow-x: auto;
+            overflow-y: hidden;
+            scroll-snap-type: x mandatory;
+            scroll-behavior: smooth;
             margin-bottom: 30px;
         }
+        .carousel::-webkit-scrollbar {
+            height: 0;
+        }
         .carousel-item {
-            width: 280px; height: 160px;
+            width: 280px;
+            height: 160px;
             flex-shrink: 0;
             border-radius: 16px;
             object-fit: cover;
             filter: brightness(0.5);
             transition: all 0.4s ease;
+            scroll-snap-align: center;
         }
         .carousel-item.active {
             height: 180px;
             filter: brightness(1);
         }
 
-        /* 列表 */
         .list {
             padding: 20px 24px 80px;
             display: flex; flex-direction: column; gap: 14px;
@@ -196,7 +209,6 @@
         .item.left { width: 75%; align-self: flex-start; }
         .item.right { width: 75%; align-self: flex-end; }
 
-        /* 隐藏轮播 */
         .carousel.hide {
             opacity: 0; visibility: hidden;
             height: 0; margin: 0;
@@ -206,9 +218,10 @@
 
 <body>
 
-<!-- 顶部栏 -->
 <div class="top-bar">
-    <div class="logo">L</div>
+    <div class="logo">
+        <img src="favpng.png" alt="Logo">
+    </div>
     <div class="title-group">
         <div class="site-title">LamdaGames</div>
         <div class="dev-tag">开发人员</div>
@@ -220,14 +233,13 @@
 
 <div class="header">
     <h1>TanFoJze</h1>
-    <div class="slogan">明天会更好，向往美好</div>
+    <div class="slogan">x仕x.Looking forward to tomorrow</div>
 
     <div class="search-row">
         <input placeholder="搜索..." type="text" id="search">
         <button>搜索</button>
     </div>
 
-    <!-- 快捷方式 -->
     <div class="shortcuts">
         <div class="shortcut">应用</div>
         <div class="shortcut">开源</div>
@@ -238,17 +250,15 @@
         <div class="shortcut">更多</div>
     </div>
 
-    <div class="scroll-tip">↑ 向上滑动探索更多</div>
+    <div class="scroll-tip">︿ 向上滑动展开列表</div>
 
-    <!-- 横向轮播 GIF/图片 -->
     <div class="carousel" id="carousel">
         <img src="jh000gif.gif" class="carousel-item active">
-        <img src="pic2.gif" class="carousel-item">
-        <img src="pic3.jpg" class="carousel-item">
+        <img src="jh000gif.gif" class="carousel-item">
+        <img src="jh000gif.gif" class="carousel-item">
     </div>
 </div>
 
-<!-- 选项列表 -->
 <div class="list" id="list">
     <div class="item left">选项 01</div>
     <div class="item right">选项 02</div>
@@ -259,21 +269,18 @@
 </div>
 
 <script>
-    // 全屏
     document.addEventListener('click', () => {
         if (document.documentElement.requestFullscreen) {
             document.documentElement.requestFullscreen();
         }
     }, { once: true });
 
-    // 主题切换
     const themeBtn = document.getElementById('themeBtn');
     themeBtn.onclick = () => {
         document.body.classList.toggle('light');
         themeBtn.textContent = document.body.classList.contains('light') ? '夜' : '昼';
     };
 
-    // 轮播滑动高亮
     const carousel = document.getElementById('carousel');
     function updateActive() {
         const items = document.querySelectorAll('.carousel-item');
@@ -292,7 +299,6 @@
     carousel.addEventListener('scroll', updateActive);
     updateActive();
 
-    // 上滑显示列表
     const list = document.getElementById('list');
     window.addEventListener('scroll', () => {
         if (window.scrollY > 100) {
@@ -319,7 +325,5 @@
         cur = 0;
     }
 </script>
-
 </body>
 </html>
-
