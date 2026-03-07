@@ -35,7 +35,7 @@
             width: 100%;
             height: 100%;
             pointer-events: none;
-            z-index: 0;
+            z-index: 998;
         }
 
         .top-bar {
@@ -158,8 +158,8 @@
 
         .shortcuts {
             width: 100%; max-width: 420px;
-            display: flex; gap: 10px;
-            margin-bottom: 24px;
+            display: flex; gap: 8px;
+            margin-bottom: 12px;
             overflow-x: auto;
             padding-bottom: 4px;
         }
@@ -210,8 +210,8 @@
         }
 
         .list {
-            padding: 10px 24px 80px;
-            display: flex; flex-direction: column; gap: 14px;
+            padding: 10px 20px 60px;
+            display: flex; flex-direction: column; gap: 10px;
             opacity: 0; visibility: hidden;
             transition: opacity 0.6s;
         }
@@ -219,15 +219,16 @@
             opacity: 1; visibility: visible;
         }
         .item {
-            padding: 20px; border-radius: 16px;
+            padding: 18px; border-radius: 16px;
             background: rgba(255,255,255,0.1);
-            opacity: 0; transform: translateY(60px);
-            transition: all 0.5s;
+            opacity: 0; transform: translateY(30px);
+            transition: all 0.5s ease;
+            cursor: pointer;
         }
         body.light .item { background: #fff; }
         .item.show { opacity: 1; transform: translateY(0); }
-        .item.left { width: 75%; align-self: flex-start; }
-        .item.right { width: 75%; align-self: flex-end; }
+        .item.left { width: 85%; align-self: flex-start; }
+        .item.right { width: 85%; align-self: flex-end; }
 
         .carousel.hide {
             opacity: 0; visibility: hidden;
@@ -304,22 +305,28 @@
 </div>
 
 <div class="list" id="list">
-    <div class="item left">选项 01</div>
-    <div class="item right">选项 02</div>
-    <div class="item left">选项 03</div>
-    <div class="item right">选项 04</div>
-    <div class="item left">选项 05</div>
-    <div class="item right">选项 06</div>
+    <div class="item left" onclick="window.open('https://gatehumex.com','_blank')">Gatehumex</div>
+    <div class="item right" onclick="window.open('https://tranzelo-eternal.com','_blank')">Tranzelo-Eternal</div>
+    <div class="item left" onclick="window.open('https://tranzelo-endless.com','_blank')">Tranzelo-Endless</div>
+    <div class="item right" onclick="window.open('https://tranzello-immortal.com','_blank')">Tranzello-Immortal</div>
+    <div class="item left" onclick="window.open('https://fishbone-engine.com','_blank')">Fishbone Engine</div>
+    <div class="item right" onclick="window.open('https://github.com/tanfo','_blank')">TanFo's Github</div>
+    <div class="item left" onclick="window.open('https://operator-api.com','_blank')">Operator API</div>
+    <div class="item right" onclick="window.open('https://tfj-pan.com','_blank')">TFJ云盘下载服务</div>
+    <div class="item left" onclick="window.open('https://my-collection.com','_blank')">收藏网站集合</div>
+    <div class="item right" onclick="window.open('https://resource-box.com','_blank')">资源box</div>
+    <div class="item left" onclick="window.open('https://tanfojze-dev.com','_blank')">Tanfojze开发者服务 移动端下载</div>
+    <div class="item right" onclick="window.open('https://contact-me.com','_blank')">我的联系方式</div>
+    <div class="item left" onclick="window.open('https://tools.tanfojze.com','_blank')">网站小工具</div>
 </div>
 
 <audio id="bgm" loop preload="auto">
     <source src="bgm.mp3" type="audio/mpeg">
 
 <script>
-    // ====================== 稳定版雨雪粒子 ======================
     const canvas = document.getElementById('particleCanvas');
     const ctx = canvas.getContext('2d');
-    let effectMode = 'off'; // rain, snow, off
+    let effectMode = 'off';
     const effectBtn = document.getElementById('effectBtn');
     let particles = [];
     let animating = true;
@@ -382,11 +389,9 @@
         }
     }
 
-    // 初始化
     createParticles();
     draw();
 
-    // 切换效果：雨 → 雪 → 无
     effectBtn.onclick = () => {
         if (effectMode === 'rain') {
             effectMode = 'snow';
@@ -402,7 +407,6 @@
         startAnim();
     };
 
-    // ====================== 提示 ======================
     const toast = document.getElementById('toast');
     function showToast(msg) {
         toast.textContent = msg;
@@ -410,21 +414,18 @@
         setTimeout(() => toast.classList.remove('show'), 2000);
     }
 
-    // ====================== 搜索 ======================
     const searchInput = document.getElementById('searchInput');
     const searchBtn = document.getElementById('searchBtn');
     searchBtn.onclick = () => {
         showToast('该内容不存在');
     };
 
-    // ====================== 昼夜 ======================
     const themeBtn = document.getElementById('themeBtn');
     themeBtn.onclick = () => {
         document.body.classList.toggle('light');
         themeBtn.textContent = document.body.classList.contains('light') ? '夜' : '昼';
     };
 
-    // ====================== 全屏 ======================
     const fullBtn = document.getElementById('fullBtn');
     fullBtn.onclick = () => {
         if (!document.fullscreenElement) {
@@ -434,7 +435,6 @@
         }
     };
 
-    // ====================== 音乐 ======================
     const bgm = document.getElementById('bgm');
     const musicBtn = document.getElementById('musicBtn');
     let playing = true;
@@ -452,7 +452,6 @@
         playing = !playing;
     };
 
-    // ====================== 轮播 ======================
     const carousel = document.getElementById('carousel');
     function updateActive() {
         const items = document.querySelectorAll('.carousel-item');
@@ -471,15 +470,28 @@
     carousel.addEventListener('scroll', updateActive);
     updateActive();
 
-    // ====================== 上滑展开 ======================
     const list = document.getElementById('list');
+    let cur = 0;
+    const items = document.querySelectorAll('.item');
+    function showItems() {
+        if (cur >= items.length) return;
+        items[cur].classList.add('show');
+        cur++;
+        setTimeout(showItems, 120);
+    }
+    function resetItems() {
+        items.forEach(i => i.classList.remove('show'));
+        cur = 0;
+    }
     window.addEventListener('scroll', () => {
         if (window.scrollY > 100) {
             carousel.classList.add('hide');
             list.classList.add('show');
+            showItems();
         } else {
             carousel.classList.remove('hide');
             list.classList.remove('show');
+            resetItems();
         }
     });
 </script>
