@@ -91,7 +91,7 @@
             z-index: 0;
         }
 
-        /* ========== TanFoJze 背景图：上不透明 → 下透明渐变 ========== */
+        /* 背景图：宽度铺满，高等比缩放，上实下透 */
         .header::before {
             content: "";
             position: absolute;
@@ -100,7 +100,8 @@
             width: 100%;
             height: 100%;
             background-image: url("bg.jpg");
-            background-size: cover;
+            background-repeat: no-repeat;
+            background-size: 100% auto;
             background-position: center top;
             z-index: -1;
             -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 70%, transparent 100%);
@@ -255,7 +256,7 @@
     </div>
     <div class="spacer"></div>
 
-    <div class="top-btn" id="musicBtn">♪</div>
+    <div class="top-btn" id="musicBtn">♫</div>
     <div class="top-btn" id="themeBtn">昼</div>
     <div class="top-btn" id="fullBtn">⛶</div>
     <div class="top-btn menu-toggle">☰</div>
@@ -334,16 +335,22 @@
         }
     };
 
+    // 背景音乐：默认自动播放，可开关
     const bgm = document.getElementById('bgm');
     const musicBtn = document.getElementById('musicBtn');
-    let playing = false;
+    let playing = true;
+
+    window.addEventListener('load', () => {
+        bgm.play().catch(err => {});
+    });
+
     musicBtn.onclick = () => {
-        if (!playing) {
-            bgm.play();
-            musicBtn.textContent = '♫';
-        } else {
+        if (playing) {
             bgm.pause();
             musicBtn.textContent = '♪';
+        } else {
+            bgm.play();
+            musicBtn.textContent = '♫';
         }
         playing = !playing;
     };
