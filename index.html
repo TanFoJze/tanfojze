@@ -63,6 +63,39 @@
             pointer-events: auto;
         }
 
+        .center-time-box {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 220px;
+            padding: 20px;
+            background: rgba(30,30,30,0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            z-index: 999;
+            text-align: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+        body.light .center-time-box {
+            background: rgba(255,255,255,0.9);
+        }
+        .center-time-box.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .center-date {
+            font-size: 14px;
+            margin-bottom: 6px;
+            opacity: 0.8;
+        }
+        .center-week {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
         .left-sidebar, .right-sidebar {
             position: fixed;
             top: 0;
@@ -71,7 +104,7 @@
             background: rgba(20,20,20,0.95);
             backdrop-filter: blur(16px);
             z-index: 998;
-            padding: 70px 20px 40px;
+            padding: 20px 20px 40px;
             transition: transform 0.35s ease;
             overflow-y: auto;
         }
@@ -92,31 +125,34 @@
         .right-sidebar.show {
             transform: translateX(0);
         }
+
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        body.light .sidebar-header {
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+        }
+        .sidebar-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
         .sidebar-close {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            width: 36px;
-            height: 36px;
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
             background: rgba(255,255,255,0.1);
             display: grid;
             place-items: center;
             cursor: pointer;
-            font-size: 18px;
+            font-size: 16px;
         }
         body.light .sidebar-close {
             background: rgba(0,0,0,0.1);
-        }
-        .sidebar-title {
-            font-size: 20px;
-            font-weight: 600;
-            margin-bottom: 30px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-        }
-        body.light .sidebar-title {
-            border-bottom: 1px solid rgba(0,0,0,0.1);
         }
         .sidebar-item {
             padding: 12px 16px;
@@ -357,9 +393,16 @@
 <canvas id="particleCanvas"></canvas>
 <div class="sidebar-mask" id="sidebarMask"></div>
 
+<div class="center-time-box" id="centerTimeBox">
+    <div class="center-date" id="centerDate"></div>
+    <div class="center-week" id="centerWeek"></div>
+</div>
+
 <div class="left-sidebar" id="leftSidebar">
-    <div class="sidebar-close" id="leftSidebarClose">×</div>
-    <div class="sidebar-title">左侧导航栏</div>
+    <div class="sidebar-header">
+        <div class="sidebar-title">左侧导航栏</div>
+        <div class="sidebar-close" id="leftSidebarClose">×</div>
+    </div>
     <div class="sidebar-item">首页入口</div>
     <div class="sidebar-item">快速导航</div>
     <div class="sidebar-item">功能汇总</div>
@@ -367,8 +410,10 @@
 </div>
 
 <div class="right-sidebar" id="rightSidebar">
-    <div class="sidebar-close" id="rightSidebarClose">×</div>
-    <div class="sidebar-title">右侧菜单</div>
+    <div class="sidebar-header">
+        <div class="sidebar-title">右侧菜单</div>
+        <div class="sidebar-close" id="rightSidebarClose">×</div>
+    </div>
     <div class="sidebar-item">设置中心</div>
     <div class="sidebar-item">皮肤更换</div>
     <div class="sidebar-item">特效设置</div>
@@ -437,236 +482,266 @@
 <audio id="bgm" loop preload="auto">
     <source src="bgm.mp3" type="audio/mpeg">
 
-
 <script>
-    const canvas = document.getElementById('particleCanvas');
-    const ctx = canvas.getContext('2d');
-    let effectMode = 'off';
-    const effectBtn = document.getElementById('effectBtn');
-    let particles = [];
-    let animating = true;
+const canvas = document.getElementById('particleCanvas');
+const ctx = canvas.getContext('2d');
+let effectMode = 'off';
+const effectBtn = document.getElementById('effectBtn');
+let particles = [];
+let animating = true;
 
-    function resizeCanvas() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+
+function createParticles() {
+    particles = [];
+    let count = 0;
+    if (effectMode === 'rain') count = 200;
+    if (effectMode === 'snow') count = 150;
+    for (let i = 0; i < count; i++) {
+        particles.push({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            s: Math.random() + 0.5
+        });
     }
-    resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
+}
 
-    function createParticles() {
-        particles = [];
-        let count = 0;
-        if (effectMode === 'rain') count = 200;
-        if (effectMode === 'snow') count = 150;
-        for (let i = 0; i < count; i++) {
-            particles.push({
-                x: Math.random() * canvas.width,
-                y: Math.random() * canvas.height,
-                s: Math.random() + 0.5
+function draw() {
+    if (!animating) return;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    if (effectMode !== 'off') {
+        if (effectMode === 'rain') {
+            ctx.fillStyle = 'rgba(255,255,255,0.55)';
+            particles.forEach(p => {
+                ctx.fillRect(p.x, p.y, 1.2, 10 + p.s * 4);
+                p.y += 10 + p.s * 4;
+                if (p.y > canvas.height) p.y = -30;
+            });
+        } else {
+            ctx.fillStyle = 'rgba(255,255,255,0.8)';
+            particles.forEach(p => {
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, 1.8 + p.s, 0, Math.PI * 2);
+                ctx.fill();
+                p.y += 2 + p.s;
+                p.x += Math.sin(p.y * 0.03) * 0.6;
+                if (p.y > canvas.height) {
+                    p.y = -10;
+                    p.x = Math.random() * canvas.width;
+                }
             });
         }
     }
+    requestAnimationFrame(draw);
+}
 
-    function draw() {
-        if (!animating) return;
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        if (effectMode !== 'off') {
-            if (effectMode === 'rain') {
-                ctx.fillStyle = 'rgba(255,255,255,0.55)';
-                particles.forEach(p => {
-                    ctx.fillRect(p.x, p.y, 1.2, 10 + p.s * 4);
-                    p.y += 10 + p.s * 4;
-                    if (p.y > canvas.height) p.y = -30;
-                });
-            } else {
-                ctx.fillStyle = 'rgba(255,255,255,0.8)';
-                particles.forEach(p => {
-                    ctx.beginPath();
-                    ctx.arc(p.x, p.y, 1.8 + p.s, 0, Math.PI * 2);
-                    ctx.fill();
-                    p.y += 2 + p.s;
-                    p.x += Math.sin(p.y * 0.03) * 0.6;
-                    if (p.y > canvas.height) {
-                        p.y = -10;
-                        p.x = Math.random() * canvas.width;
-                    }
-                });
-            }
-        }
-        requestAnimationFrame(draw);
+function startAnim() {
+    if (!animating) {
+        animating = true;
+        draw();
     }
+}
+createParticles();
+draw();
 
-    function startAnim() {
-        if (!animating) {
-            animating = true;
-            draw();
-        }
+effectBtn.onclick = () => {
+    if (effectMode === 'rain') {
+        effectMode = 'snow';
+        effectBtn.textContent = '雪';
+    } else if (effectMode === 'snow') {
+        effectMode = 'off';
+        effectBtn.textContent = '无';
+    } else {
+        effectMode = 'rain';
+        effectBtn.textContent = '雨';
     }
     createParticles();
-    draw();
+    startAnim();
+};
 
-    effectBtn.onclick = () => {
-        if (effectMode === 'rain') {
-            effectMode = 'snow';
-            effectBtn.textContent = '雪';
-        } else if (effectMode === 'snow') {
-            effectMode = 'off';
-            effectBtn.textContent = '无';
-        } else {
-            effectMode = 'rain';
-            effectBtn.textContent = '雨';
-        }
-        createParticles();
-        startAnim();
-    };
+const toast = document.getElementById('toast');
+function showToast(msg) {
+    toast.textContent = msg;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2000);
+}
 
-    const toast = document.getElementById('toast');
-    function showToast(msg) {
-        toast.textContent = msg;
-        toast.classList.add('show');
-        setTimeout(() => toast.classList.remove('show'), 2000);
+const searchInput = document.getElementById('searchInput');
+const searchBtn = document.getElementById('searchBtn');
+searchBtn.onclick = () => {
+    showToast('该内容不存在');
+};
+
+const themeBtn = document.getElementById('themeBtn');
+themeBtn.onclick = () => {
+    document.body.classList.toggle('light');
+    themeBtn.textContent = document.body.classList.contains('light') ? '夜' : '昼';
+};
+
+const fullBtn = document.getElementById('fullBtn');
+fullBtn.onclick = () => {
+    if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen();
+    } else {
+        document.exitFullscreen();
     }
+};
 
-    const searchInput = document.getElementById('searchInput');
-    const searchBtn = document.getElementById('searchBtn');
-    searchBtn.onclick = () => {
-        showToast('该内容不存在');
-    };
-
-    const themeBtn = document.getElementById('themeBtn');
-    themeBtn.onclick = () => {
-        document.body.classList.toggle('light');
-        themeBtn.textContent = document.body.classList.contains('light') ? '夜' : '昼';
-    };
-
-    const fullBtn = document.getElementById('fullBtn');
-    fullBtn.onclick = () => {
-        if (!document.fullscreenElement) {
-            document.documentElement.requestFullscreen();
-        } else {
-            document.exitFullscreen();
-        }
-    };
-
-    const bgm = document.getElementById('bgm');
-    const musicBtn = document.getElementById('musicBtn');
-    let playing = true;
-    window.addEventListener('load', () => {
-        bgm.play().catch(() => {});
-    });
-    musicBtn.onclick = () => {
-        if (playing) {
-            bgm.pause();
-            musicBtn.textContent = '静';
-        } else {
-            bgm.play();
-            musicBtn.textContent = '♫';
-        }
-        playing = !playing;
-    };
-
-    const carousel = document.getElementById('carousel');
-    function updateActive() {
-        const items = document.querySelectorAll('.carousel-item');
-        const rect = carousel.getBoundingClientRect();
-        const center = rect.left + rect.width / 2;
-        items.forEach(el => {
-            const r = el.getBoundingClientRect();
-            const c = r.left + r.width / 2;
-            if (Math.abs(c - center) < r.width / 1.5) {
-                el.classList.add('active');
-            } else {
-                el.classList.remove('active');
-            }
-        });
+const bgm = document.getElementById('bgm');
+const musicBtn = document.getElementById('musicBtn');
+let playing = true;
+window.addEventListener('load', () => {
+    bgm.play().catch(() => {});
+});
+musicBtn.onclick = () => {
+    if (playing) {
+        bgm.pause();
+        musicBtn.textContent = '静';
+    } else {
+        bgm.play();
+        musicBtn.textContent = '♫';
     }
-    carousel.addEventListener('scroll', updateActive);
-    updateActive();
+    playing = !playing;
+};
 
-    const list = document.getElementById('list');
-    let cur = 0;
-    const items = document.querySelectorAll('.item');
-    function showItems() {
-        if (cur >= items.length) return;
-        items[cur].classList.add('show');
-        cur++;
-        setTimeout(showItems, 120);
-    }
-    function resetItems() {
-        items.forEach(i => i.classList.remove('show'));
-        cur = 0;
-    }
-    window.addEventListener('scroll', () => {
-        if (window.scrollY > 100) {
-            carousel.classList.add('hide');
-            list.classList.add('show');
-            showItems();
+const carousel = document.getElementById('carousel');
+function updateActive() {
+    const items = document.querySelectorAll('.carousel-item');
+    const rect = carousel.getBoundingClientRect();
+    const center = rect.left + rect.width / 2;
+    items.forEach(el => {
+        const r = el.getBoundingClientRect();
+        const c = r.left + r.width / 2;
+        if (Math.abs(c - center) < r.width / 1.5) {
+            el.classList.add('active');
         } else {
-            carousel.classList.remove('hide');
-            list.classList.remove('show');
-            resetItems();
+            el.classList.remove('active');
         }
     });
+}
+carousel.addEventListener('scroll', updateActive);
+updateActive();
 
-    // 侧边栏核心交互
-    const logoBtn = document.getElementById('logoBtn');
-    const menuBtn = document.getElementById('menuBtn');
-    const siteTitleBtn = document.getElementById('siteTitleBtn');
-    const leftSidebar = document.getElementById('leftSidebar');
-    const rightSidebar = document.getElementById('rightSidebar');
-    const leftSidebarClose = document.getElementById('leftSidebarClose');
-    const rightSidebarClose = document.getElementById('rightSidebarClose');
-    const sidebarMask = document.getElementById('sidebarMask');
-    const body = document.body;
+const list = document.getElementById('list');
+let cur = 0;
+const items = document.querySelectorAll('.item');
+function showItems() {
+    if (cur >= items.length) return;
+    items[cur].classList.add('show');
+    cur++;
+    setTimeout(showItems, 120);
+}
+function resetItems() {
+    items.forEach(i => i.classList.remove('show'));
+    cur = 0;
+}
+window.addEventListener('scroll', () => {
+    if (window.scrollY > 100) {
+        carousel.classList.add('hide');
+        list.classList.add('show');
+        showItems();
+    } else {
+        carousel.classList.remove('hide');
+        list.classList.remove('show');
+        resetItems();
+    }
+});
 
-    // 标题跳转指定地址
-    siteTitleBtn.onclick = () => {
-        window.open('https://lamdagames2024.github.io/home000/', '_blank');
-    };
+const logoBtn = document.getElementById('logoBtn');
+const menuBtn = document.getElementById('menuBtn');
+const siteTitleBtn = document.getElementById('siteTitleBtn');
+const leftSidebar = document.getElementById('leftSidebar');
+const rightSidebar = document.getElementById('rightSidebar');
+const leftSidebarClose = document.getElementById('leftSidebarClose');
+const rightSidebarClose = document.getElementById('rightSidebarClose');
+const sidebarMask = document.getElementById('sidebarMask');
+const centerTimeBox = document.getElementById('centerTimeBox');
+const centerDate = document.getElementById('centerDate');
+const centerWeek = document.getElementById('centerWeek');
+const body = document.body;
 
-    // 打开左侧栏
-    logoBtn.onclick = () => {
+siteTitleBtn.onclick = () => {
+    window.open('https://lamdagames2024.github.io/home000/', '_blank');
+};
+
+function updateTimeBox() {
+    const now = new Date();
+    const y = now.getFullYear();
+    const m = now.getMonth() + 1;
+    const d = now.getDate();
+    const wd = now.getDay();
+    const weekArr = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+    centerDate.textContent = y + '年' + m + '月' + d + '日';
+    centerWeek.textContent = weekArr[wd];
+}
+
+function closeAllSidebars() {
+    leftSidebar.classList.remove('show');
+    rightSidebar.classList.remove('show');
+    sidebarMask.classList.remove('show');
+    centerTimeBox.classList.remove('show');
+    body.classList.remove('sidebar-open');
+}
+
+function checkBothSidebar() {
+    const l = leftSidebar.classList.contains('show');
+    const r = rightSidebar.classList.contains('show');
+    if (l && r) {
+        centerTimeBox.classList.add('show');
+        updateTimeBox();
+    } else {
+        centerTimeBox.classList.remove('show');
+    }
+}
+
+logoBtn.onclick = () => {
+    const isOpen = leftSidebar.classList.contains('show');
+    closeAllSidebars();
+    if (!isOpen) {
         leftSidebar.classList.add('show');
         sidebarMask.classList.add('show');
         body.classList.add('sidebar-open');
-    };
+    }
+    checkBothSidebar();
+};
 
-    // 打开右侧栏
-    menuBtn.onclick = () => {
+menuBtn.onclick = () => {
+    const isOpen = rightSidebar.classList.contains('show');
+    closeAllSidebars();
+    if (!isOpen) {
         rightSidebar.classList.add('show');
         sidebarMask.classList.add('show');
         body.classList.add('sidebar-open');
-    };
+    }
+    checkBothSidebar();
+};
 
-    // 关闭左侧栏
-    leftSidebarClose.onclick = () => {
-        leftSidebar.classList.remove('show');
-        sidebarMask.classList.remove('show');
-        body.classList.remove('sidebar-open');
-    };
+leftSidebarClose.onclick = () => {
+    closeAllSidebars();
+};
 
-    // 关闭右侧栏
-    rightSidebarClose.onclick = () => {
-        rightSidebar.classList.remove('show');
-        sidebarMask.classList.remove('show');
-        body.classList.remove('sidebar-open');
-    };
+rightSidebarClose.onclick = () => {
+    closeAllSidebars();
+};
 
-    // 点击遮罩（空白区域）关闭所有侧边栏
-    sidebarMask.onclick = () => {
-        leftSidebar.classList.remove('show');
-        rightSidebar.classList.remove('show');
-        sidebarMask.classList.remove('show');
-        body.classList.remove('sidebar-open');
-    };
+sidebarMask.onclick = () => {
+    closeAllSidebars();
+};
 
-    // 阻止侧边栏内部点击触发遮罩关闭
-    leftSidebar.onclick = (e) => {
-        e.stopPropagation();
-    };
-    rightSidebar.onclick = (e) => {
-        e.stopPropagation();
-    };
+leftSidebar.onclick = (e) => {
+    e.stopPropagation();
+};
+rightSidebar.onclick = (e) => {
+    e.stopPropagation();
+};
+centerTimeBox.onclick = (e) => {
+    e.stopPropagation();
+};
 </script>
 </body>
 </html>
