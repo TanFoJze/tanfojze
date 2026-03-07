@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/png" href="favicon.png">
-    <title>TanFoJze - 开发者个人主页</title>
+    <title>LamdaGames</title>
     <style>
         * {
             margin: 0;
@@ -18,273 +17,309 @@
             scroll-behavior: smooth;
         }
         body {
-            background: #1a1a1a;
+            background: #121212;
             color: #fff;
             font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            transition: background 0.3s;
+        }
+        body.light {
+            background: #f6f6f6;
+            color: #222;
         }
 
-        /* 顶部区域 */
+        /* ========== 顶部标题栏 ========== */
+        .top-bar {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: 54px;
+            background: rgba(20,20,20,0.8);
+            backdrop-filter: blur(12px);
+            display: flex; align-items: center;
+            padding: 0 16px;
+            z-index: 999;
+            transition: background 0.3s;
+        }
+        body.light .top-bar {
+            background: rgba(255,255,255,0.85);
+        }
+
+        .logo {
+            width: 32px; height: 32px;
+            background: #4488ff; border-radius: 8px;
+            display: grid; place-items: center;
+            font-weight: bold; margin-right: 10px;
+        }
+        .title-group {
+            display: flex; align-items: center; gap: 8px;
+        }
+        .site-title {
+            font-size: 18px; font-weight: 600;
+        }
+        .dev-tag {
+            font-size: 12px; color: #999;
+            display: flex; align-items: center; gap: 4px;
+        }
+        .dev-tag::after {
+            content: '▼'; font-size: 8px; color: #888;
+        }
+
+        .spacer { flex: 1; }
+
+        .theme-toggle {
+            width: 36px; height: 36px;
+            display: grid; place-items: center;
+            border-radius: 50%; cursor: pointer;
+        }
+        .menu-toggle {
+            width: 36px; height: 36px;
+            display: grid; place-items: center;
+            border-radius: 50%; cursor: pointer;
+            font-size: 20px;
+        }
+
+        /* ========== 顶部内容 ========== */
         .header {
-            position: relative;
-            z-index: 10;
+            padding-top: 70px;
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
+            display: flex; flex-direction: column;
             align-items: center;
-            justify-content: center;
-            padding: 40px 24px;
-            background: radial-gradient(ellipse top, #2a2a2a, #1a1a1a);
+            padding-inline: 24px;
         }
 
         h1 {
-            font-size: 32px;
-            margin-bottom: 10px;
-            color: #fff;
-            text-shadow: 0 0 10px rgba(255,255,255,0.2);
+            font-size: 28px;
+            margin-bottom: 8px;
         }
         .slogan {
-            font-size: 16px;
-            color: #aaa;
-            margin-bottom: 30px;
+            font-size: 14px; color: #888;
+            margin-bottom: 24px;
         }
+        body.light .slogan { color: #666; }
 
-        /* 搜索栏 */
+        /* 搜索框 */
         .search-row {
-            display: flex;
-            gap: 10px;
-            width: 100%;
-            max-width: 400px;
-            margin-bottom: 20px;
+            width: 100%; max-width: 420px;
+            display: flex; gap: 10px;
+            margin-bottom: 16px;
         }
         .search-row input {
-            flex: 1;
-            padding: 14px 18px;
-            border: 1px solid rgba(255,255,255,0.15);
-            border-radius: 16px;
+            flex: 1; padding: 14px 18px;
+            border-radius: 16px; border: none;
             background: rgba(255,255,255,0.08);
-            color: #fff;
-            font-size: 16px;
-            outline: none;
-            backdrop-filter: blur(10px);
-            transition: .3s;
+            color: #fff; font-size: 16px; outline: none;
         }
-        .search-row input:focus {
-            border-color: rgba(130, 170, 255, 0.4);
-            background: rgba(255,255,255,0.12);
+        body.light .search-row input {
+            background: #fff; color: #222;
+            box-shadow: 0 1px 4px #0001;
         }
         .search-row button {
             padding: 14px 16px;
-            border: 1px solid rgba(255,255,255,0.15);
-            border-radius: 16px;
+            border-radius: 16px; border: none;
             background: rgba(255,255,255,0.08);
-            color: #fff;
-            font-size: 16px;
-            cursor: pointer;
-            backdrop-filter: blur(10px);
-            transition: .3s;
+            color: #fff; cursor: pointer;
         }
-        .search-row button:hover {
-            background: rgba(255,255,255,0.15);
+        body.light .search-row button {
+            background: #fff; color: #222;
+        }
+
+        /* ========== 快捷方式 ========== */
+        .shortcuts {
+            width: 100%; max-width: 420px;
+            display: flex; gap: 10px;
+            margin-bottom: 24px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+        }
+        .shortcuts::-webkit-scrollbar { height: 0; }
+        .shortcut {
+            min-width: 60px; padding: 10px 6px;
+            background: rgba(255,255,255,0.06);
+            border-radius: 12px; text-align: center;
+            font-size: 12px; color: #ccc;
+            white-space: nowrap;
+        }
+        body.light .shortcut {
+            background: #fff; color: #444;
         }
 
         /* 上滑提示 */
         .scroll-tip {
-            font-size: 14px;
-            color: #888;
+            font-size: 12px; color: #888;
+            margin-bottom: 20px;
+        }
+
+        /* ========== 横向轮播 ========== */
+        .carousel {
+            width: 100%; max-width: 420px;
+            height: 180px;
+            position: relative;
+            display: flex; justify-content: center;
+            align-items: center; gap: 12px;
+            overflow: hidden;
             margin-bottom: 30px;
-            animation: upDown 1.8s infinite alternate ease-in-out;
         }
-        @keyframes upDown {
-            from { transform: translateY(0); opacity: 0.5; }
-            to   { transform: translateY(-6px); opacity: 1; }
+        .carousel-item {
+            width: 280px; height: 160px;
+            flex-shrink: 0;
+            border-radius: 16px;
+            object-fit: cover;
+            filter: brightness(0.5);
+            transition: all 0.4s ease;
         }
-
-        /* GIF 区域 */
-        .gif-box {
-            width: 100%;
-            max-width: 260px;
-            transition: all 0.5s ease;
-            transform-origin: center;
-        }
-        .gif-box img {
-            width: 100%;
-            height: auto;
-            border-radius: 14px;
-            display: block;
-        }
-        .gif-box.hide {
-            opacity: 0;
-            visibility: hidden;
-            transform: scale(0.8);
-            height: 0;
-            margin: 0;
+        .carousel-item.active {
+            height: 180px;
+            filter: brightness(1);
         }
 
-        /* 选项列表 */
+        /* 列表 */
         .list {
             padding: 20px 24px 80px;
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.6s ease;
+            display: flex; flex-direction: column; gap: 14px;
+            opacity: 0; visibility: hidden;
+            transition: opacity 0.6s;
         }
         .list.show {
-            opacity: 1;
-            visibility: visible;
+            opacity: 1; visibility: visible;
         }
-
         .item {
-            background: rgba(255,255,255,0.07);
-            border: 1px solid rgba(255,255,255,0.12);
-            padding: 20px 22px;
-            border-radius: 16px;
-            backdrop-filter: blur(10px);
-            transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
-            opacity: 0;
-            transform: translateY(60px);
+            padding: 20px; border-radius: 16px;
+            background: rgba(255,255,255,0.06);
+            opacity: 0; transform: translateY(60px);
+            transition: all 0.5s;
+        }
+        body.light .item {
+            background: #fff;
         }
         .item.show {
-            opacity: 1;
-            transform: translateY(0);
+            opacity: 1; transform: translateY(0);
         }
-        .item:hover {
-            background: rgba(255,255,255,0.12);
-            border-color: rgba(130, 170, 255, 0.2);
-            transform: scale(1.02);
-        }
-        .item.left-long {
-            width: 76%;
-            align-self: flex-start;
-        }
-        .item.right-long {
-            width: 76%;
-            align-self: flex-end;
-        }
+        .item.left { width: 75%; align-self: flex-start; }
+        .item.right { width: 75%; align-self: flex-end; }
 
-        /* 顶部提示 */
-        .toast {
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%) translateY(-120%);
-            background: rgba(255, 80, 80, 0.9);
-            color: #fff;
-            padding: 12px 24px;
-            border-radius: 12px;
-            z-index: 9999;
-            backdrop-filter: blur(10px);
-            opacity: 0;
-            transition: all 0.4s ease;
-            white-space: nowrap;
-        }
-        .toast.show {
-            transform: translateX(-50%) translateY(0);
-            opacity: 1;
+        /* 隐藏轮播 */
+        .carousel.hide {
+            opacity: 0; visibility: hidden;
+            height: 0; margin: 0;
         }
     </style>
 </head>
 
 <body>
 
-<div class="toast" id="toast">该内容不存在</div>
+<!-- 顶部栏 -->
+<div class="top-bar">
+    <div class="logo">L</div>
+    <div class="title-group">
+        <div class="site-title">LamdaGames</div>
+        <div class="dev-tag">开发人员</div>
+    </div>
+    <div class="spacer"></div>
+    <div class="theme-toggle" id="themeBtn">昼</div>
+    <div class="menu-toggle">☰</div>
+</div>
 
 <div class="header">
-    <h1>TanFoJze - 开发者个人主页</h1>
+    <h1>TanFoJze</h1>
     <div class="slogan">明天会更好，向往美好</div>
 
     <div class="search-row">
-        <input type="text" id="searchInput" placeholder="搜索...">
-        <button id="searchBtn">搜索</button>
+        <input placeholder="搜索..." type="text" id="search">
+        <button>搜索</button>
+    </div>
+
+    <!-- 快捷方式 -->
+    <div class="shortcuts">
+        <div class="shortcut">应用</div>
+        <div class="shortcut">开源</div>
+        <div class="shortcut">终端</div>
+        <div class="shortcut">资源</div>
+        <div class="shortcut">图片</div>
+        <div class="shortcut">网站</div>
+        <div class="shortcut">更多</div>
     </div>
 
     <div class="scroll-tip">↑ 向上滑动探索更多</div>
 
-    <!-- GIF 你自己在这里改文件名 -->
-    <div class="gif-box" id="gifBox">
-        <img src="jh000gif.gif" alt="Planet">
+    <!-- 横向轮播 GIF/图片 -->
+    <div class="carousel" id="carousel">
+        <img src="jh000gif.gif" class="carousel-item active">
+        <img src="pic2.gif" class="carousel-item">
+        <img src="pic3.jpg" class="carousel-item">
     </div>
 </div>
 
+<!-- 选项列表 -->
 <div class="list" id="list">
-    <div class="item left-long">选项 01</div>
-    <div class="item right-long">选项 02</div>
-    <div class="item left-long">选项 03</div>
-    <div class="item right-long">选项 04</div>
-    <div class="item left-long">选项 05</div>
-    <div class="item right-long">选项 06</div>
-    <div class="item left-long">选项 07</div>
-    <div class="item right-long">选项 08</div>
-    <div class="item left-long">选项 09</div>
-    <div class="item right-long">选项 10</div>
-    <div class="item left-long">选项 11</div>
-    <div class="item right-long">选项 12</div>
-    <div class="item left-long">选项 13</div>
-    <div class="item right-long">选项 14</div>
-    <div class="item left-long">选项 15</div>
-    <div class="item right-long">选项 16</div>
-    <div class="item left-long">选项 17</div>
-    <div class="item right-long">选项 18</div>
-    <div class="item left-long">选项 19</div>
-    <div class="item right-long">选项 20</div>
+    <div class="item left">选项 01</div>
+    <div class="item right">选项 02</div>
+    <div class="item left">选项 03</div>
+    <div class="item right">选项 04</div>
+    <div class="item left">选项 05</div>
+    <div class="item right">选项 06</div>
 </div>
 
 <script>
-    // 搜索提示
-    const searchInput = document.getElementById('searchInput');
-    const searchBtn = document.getElementById('searchBtn');
-    const toast = document.getElementById('toast');
-    let toastTimer;
+    // 全屏
+    document.addEventListener('click', () => {
+        if (document.documentElement.requestFullscreen) {
+            document.documentElement.requestFullscreen();
+        }
+    }, { once: true });
 
-    function showToast() {
-        toast.classList.add('show');
-        clearTimeout(toastTimer);
-        toastTimer = setTimeout(() => toast.classList.remove('show'), 2800);
-    }
-    function doSearch() {
-        const val = searchInput.value.trim();
-        if (val) showToast();
-    }
-    searchBtn.addEventListener('click', doSearch);
-    searchInput.addEventListener('keydown', e => {
-        if (e.key === 'Enter') doSearch();
-    });
+    // 主题切换
+    const themeBtn = document.getElementById('themeBtn');
+    themeBtn.onclick = () => {
+        document.body.classList.toggle('light');
+        themeBtn.textContent = document.body.classList.contains('light') ? '夜' : '昼';
+    };
 
-    // 滑动逻辑
-    const gifBox = document.getElementById('gifBox');
+    // 轮播滑动高亮
+    const carousel = document.getElementById('carousel');
+    function updateActive() {
+        const items = document.querySelectorAll('.carousel-item');
+        const rect = carousel.getBoundingClientRect();
+        const center = rect.left + rect.width / 2;
+        items.forEach(el => {
+            const r = el.getBoundingClientRect();
+            const c = r.left + r.width / 2;
+            if (Math.abs(c - center) < r.width / 1.5) {
+                el.classList.add('active');
+            } else {
+                el.classList.remove('active');
+            }
+        });
+    }
+    carousel.addEventListener('scroll', updateActive);
+    updateActive();
+
+    // 上滑显示列表
     const list = document.getElementById('list');
-    const items = document.querySelectorAll('.item');
-    let current = 0;
-
     window.addEventListener('scroll', () => {
-        const y = window.scrollY;
-        if (y > 90) {
-            gifBox.classList.add('hide');
+        if (window.scrollY > 100) {
+            carousel.classList.add('hide');
             list.classList.add('show');
             showItems();
         } else {
-            gifBox.classList.remove('hide');
+            carousel.classList.remove('hide');
             list.classList.remove('show');
             resetItems();
         }
     });
 
-    // 逐个弹出
+    let cur = 0;
+    const items = document.querySelectorAll('.item');
     function showItems() {
-        if (current >= items.length) return;
-        const rect = items[current].getBoundingClientRect();
-        if (rect.top < window.innerHeight - 100) {
-            items[current].classList.add('show');
-            current++;
-            setTimeout(showItems, 130);
-        }
+        if (cur >= items.length) return;
+        items[cur].classList.add('show');
+        cur++;
+        setTimeout(showItems, 140);
     }
     function resetItems() {
         items.forEach(i => i.classList.remove('show'));
-        current = 0;
+        cur = 0;
     }
 </script>
 
 </body>
 </html>
+
