@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="utf-8">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" href="favicon.png">
-    <title>TanFoJze-xsx2024:开发者个人主页</title>
+    <title>TanFoJze - 开发者个人主页</title>
     <style>
         * {
             margin: 0;
@@ -15,142 +15,120 @@
             width: 100%;
             min-height: 100vh;
             overflow-x: hidden;
+            scroll-behavior: smooth;
         }
         body {
-            background-color: #252525;
+            background: #1a1a1a;
             color: #fff;
-            font-family: system-ui, sans-serif;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         }
 
-        /* ========== 全屏视频背景 ========== */
-        .video-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            overflow: hidden;
-        }
-
-        .video-container video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            position: absolute;
-            top: 0;
-            left: 0;
-        }
-
-        /* 视频底部渐变，和背景融合 */
-        .video-fade {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 60vh;
-            background: linear-gradient(to top, #252525, transparent);
-            pointer-events: none;
-        }
-
-        /* ========== 标题区域 在视频上层 ========== */
+        /* 顶部区域 */
         .header {
             position: relative;
             z-index: 10;
-            text-align: center;
-            padding: 70px 24px 20px;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
+            padding: 40px 24px;
+            background: radial-gradient(ellipse top, #2a2a2a, #1a1a1a);
         }
 
         h1 {
             font-size: 32px;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
             color: #fff;
+            text-shadow: 0 0 10px rgba(255,255,255,0.2);
         }
-
         .slogan {
-            font-size: 17px;
-            color: #ccc;
-            margin-bottom: 28px;
+            font-size: 16px;
+            color: #aaa;
+            margin-bottom: 30px;
         }
 
-        /* 搜索框 */
+        /* 搜索栏 */
         .search-row {
             display: flex;
             gap: 10px;
-            width: 90%;
-            max-width: 420px;
-            margin: 0 auto 22px;
+            width: 100%;
+            max-width: 400px;
+            margin-bottom: 20px;
         }
         .search-row input {
             flex: 1;
             padding: 14px 18px;
-            border: 1px solid rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.15);
             border-radius: 16px;
-            outline: none;
-            font-size: 16px;
             background: rgba(255,255,255,0.08);
             color: #fff;
+            font-size: 16px;
+            outline: none;
+            backdrop-filter: blur(10px);
+            transition: .3s;
+        }
+        .search-row input:focus {
+            border-color: rgba(130, 170, 255, 0.4);
+            background: rgba(255,255,255,0.12);
         }
         .search-row button {
             padding: 14px 16px;
-            border: 1px solid rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.15);
             border-radius: 16px;
             background: rgba(255,255,255,0.08);
             color: #fff;
+            font-size: 16px;
             cursor: pointer;
+            backdrop-filter: blur(10px);
+            transition: .3s;
+        }
+        .search-row button:hover {
+            background: rgba(255,255,255,0.15);
         }
 
         /* 上滑提示 */
         .scroll-tip {
-            text-align: center;
             font-size: 14px;
-            color: #aaa;
-            margin: 10px auto 36px;
-            animation: fadeUpDown 2s infinite alternate;
+            color: #888;
+            margin-bottom: 30px;
+            animation: upDown 1.8s infinite alternate ease-in-out;
         }
-        @keyframes fadeUpDown {
-            from { opacity: 0.5; transform: translateY(0); }
-            to   { opacity: 1; transform: translateY(-6px); }
+        @keyframes upDown {
+            from { transform: translateY(0); opacity: 0.5; }
+            to   { transform: translateY(-6px); opacity: 1; }
         }
 
         /* GIF 区域 */
         .gif-box {
             width: 100%;
-            max-width: 280px;
-            margin: 0 auto 40px;
-            text-align: center;
+            max-width: 260px;
             transition: all 0.5s ease;
-            opacity: 1;
-            visibility: visible;
-        }
-        .gif-box.hide {
-            opacity: 0;
-            visibility: hidden;
-            height: 0;
-            margin: 0;
+            transform-origin: center;
         }
         .gif-box img {
             width: 100%;
             height: auto;
-            border-radius: 12px;
+            border-radius: 14px;
+            display: block;
+        }
+        .gif-box.hide {
+            opacity: 0;
+            visibility: hidden;
+            transform: scale(0.8);
+            height: 0;
+            margin: 0;
         }
 
         /* 选项列表 */
         .list {
-            padding: 10px 22px 60px;
+            padding: 20px 24px 80px;
             display: flex;
             flex-direction: column;
             gap: 14px;
-            position: relative;
-            z-index: 2;
             opacity: 0;
             visibility: hidden;
-            transition: opacity 0.5s ease;
+            transition: opacity 0.6s ease;
         }
         .list.show {
             opacity: 1;
@@ -159,10 +137,11 @@
 
         .item {
             background: rgba(255,255,255,0.07);
-            border: 1px solid rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.12);
             padding: 20px 22px;
             border-radius: 16px;
-            transition: all 0.5s ease;
+            backdrop-filter: blur(10px);
+            transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
             opacity: 0;
             transform: translateY(60px);
         }
@@ -171,7 +150,8 @@
             transform: translateY(0);
         }
         .item:hover {
-            background: rgba(255,255,255,0.13);
+            background: rgba(255,255,255,0.12);
+            border-color: rgba(130, 170, 255, 0.2);
             transform: scale(1.02);
         }
         .item.left-long {
@@ -183,7 +163,7 @@
             align-self: flex-end;
         }
 
-        /* 提示弹窗 */
+        /* 顶部提示 */
         .toast {
             position: fixed;
             top: 20px;
@@ -193,9 +173,11 @@
             color: #fff;
             padding: 12px 24px;
             border-radius: 12px;
-            z-index: 999;
+            z-index: 9999;
+            backdrop-filter: blur(10px);
             opacity: 0;
             transition: all 0.4s ease;
+            white-space: nowrap;
         }
         .toast.show {
             transform: translateX(-50%) translateY(0);
@@ -206,18 +188,8 @@
 
 <body>
 
-<!-- ========== 视频背景 ========== -->
-<div class="video-container">
-    <video autoplay muted loop playsinline>
-        <source src="tajps000background.mp4" type="video/mp4">
-    </video>
-    <div class="video-fade"></div>
-</div>
-
-<!-- 提示框 -->
 <div class="toast" id="toast">该内容不存在</div>
 
-<!-- 标题区域（在视频上面） -->
 <div class="header">
     <h1>TanFoJze - 开发者个人主页</h1>
     <div class="slogan">明天会更好，向往美好</div>
@@ -229,13 +201,12 @@
 
     <div class="scroll-tip">↑ 向上滑动探索更多</div>
 
-    <!-- GIF 文件名改为 jh000.gif -->
+    <!-- GIF 你自己在这里改文件名 -->
     <div class="gif-box" id="gifBox">
-        <img src="jh000.gif" alt="animation">
+        <img src="jh000gif.gif" alt="Planet">
     </div>
 </div>
 
-<!-- 选项列表 -->
 <div class="list" id="list">
     <div class="item left-long">选项 01</div>
     <div class="item right-long">选项 02</div>
@@ -260,7 +231,7 @@
 </div>
 
 <script>
-    // 搜索
+    // 搜索提示
     const searchInput = document.getElementById('searchInput');
     const searchBtn = document.getElementById('searchBtn');
     const toast = document.getElementById('toast');
@@ -269,24 +240,26 @@
     function showToast() {
         toast.classList.add('show');
         clearTimeout(toastTimer);
-        toastTimer = setTimeout(() => toast.classList.remove('show'), 3000);
+        toastTimer = setTimeout(() => toast.classList.remove('show'), 2800);
     }
     function doSearch() {
-        if (searchInput.value.trim()) showToast();
+        const val = searchInput.value.trim();
+        if (val) showToast();
     }
     searchBtn.addEventListener('click', doSearch);
     searchInput.addEventListener('keydown', e => {
         if (e.key === 'Enter') doSearch();
     });
 
-    // 滑动控制
+    // 滑动逻辑
     const gifBox = document.getElementById('gifBox');
     const list = document.getElementById('list');
     const items = document.querySelectorAll('.item');
-    let currentItem = 0;
+    let current = 0;
 
     window.addEventListener('scroll', () => {
-        if (window.scrollY > 80) {
+        const y = window.scrollY;
+        if (y > 90) {
             gifBox.classList.add('hide');
             list.classList.add('show');
             showItems();
@@ -297,19 +270,19 @@
         }
     });
 
+    // 逐个弹出
     function showItems() {
-        if (currentItem >= items.length) return;
-        const rect = items[currentItem].getBoundingClientRect();
-        if (rect.top < window.innerHeight - 80) {
-            items[currentItem].classList.add('show');
-            currentItem++;
-            setTimeout(showItems, 140);
+        if (current >= items.length) return;
+        const rect = items[current].getBoundingClientRect();
+        if (rect.top < window.innerHeight - 100) {
+            items[current].classList.add('show');
+            current++;
+            setTimeout(showItems, 130);
         }
     }
-
     function resetItems() {
         items.forEach(i => i.classList.remove('show'));
-        currentItem = 0;
+        current = 0;
     }
 </script>
 
