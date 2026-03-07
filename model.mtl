@@ -1,0 +1,6 @@
+# Exported from Nomad Sculpt
+
+newmtl eyes
+
+newmtl gradient
+ map_Kd gradient_baseColor.jpeg
