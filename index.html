@@ -16,6 +16,7 @@
             min-height: 100vh;
             overflow-x: hidden;
             scroll-behavior: smooth;
+            padding-bottom: 70px;
         }
         body {
             background: #121212;
@@ -68,31 +69,47 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 220px;
-            padding: 20px;
-            background: rgba(30,30,30,0.9);
-            backdrop-filter: blur(10px);
-            border-radius: 16px;
-            z-index: 999;
+            width: 240px;
+            padding: 24px;
+            background: rgba(30,30,30,0.95);
+            backdrop-filter: blur(12px);
+            border-radius: 18px;
+            z-index: 1000;
             text-align: center;
             opacity: 0;
             pointer-events: none;
             transition: opacity 0.3s;
         }
         body.light .center-time-box {
-            background: rgba(255,255,255,0.9);
+            background: rgba(255,255,255,0.95);
         }
         .center-time-box.show {
             opacity: 1;
             pointer-events: auto;
         }
-        .center-date {
+        .time-close {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+            display: grid;
+            place-items: center;
+            cursor: pointer;
             font-size: 14px;
+        }
+        body.light .time-close {
+            background: rgba(0,0,0,0.1);
+        }
+        .center-date {
+            font-size: 15px;
             margin-bottom: 6px;
-            opacity: 0.8;
+            opacity: 0.9;
         }
         .center-week {
-            font-size: 18px;
+            font-size: 20px;
             font-weight: 600;
         }
 
@@ -225,6 +242,45 @@
             font-size: 16px;
         }
 
+        /* 底部悬浮导航栏 */
+        .bottom-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 81px;
+            background: rgba(0, 0, 0, 0.92);
+            backdrop-filter: blur(16px);
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            padding: 0 10px;
+            z-index: 999;
+            transition: background 0.3s;
+        }
+        body.light .bottom-bar {
+            background: rgba(255,255,255,0.85);
+        }
+        .bottom-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 500;
+            color: #fff;
+            cursor: pointer;
+            opacity: 0.8;
+            transition: opacity 0.2s;
+        }
+        body.light .bottom-item {
+            color: #222;
+        }
+        .bottom-item.active,
+        .bottom-item:hover {
+            opacity: 1;
+        }
+
         .header {
             padding-top: 70px;
             min-height: 100vh;
@@ -344,6 +400,74 @@
             filter: brightness(1);
         }
 
+        /* 简介折叠栏 */
+        .desc-bar {
+            width: 100%;
+            max-width: 420px;
+            margin-bottom: 16px;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.05);
+            overflow: hidden;
+            transition: max-height 0.4s ease, opacity 0.3s, visibility 0.3s, height 0.3s, margin 0.3s;
+            max-height: 60px;
+            opacity: 1;
+            visibility: visible;
+            height: auto;
+        }
+        body.light .desc-bar {
+            background: rgba(0,0,0,0.05);
+        }
+        .desc-bar.expand {
+            max-height: 500px;
+        }
+        .desc-header {
+            padding: 12px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        .desc-content {
+            padding: 0 16px 16px;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #ccc;
+        }
+        body.light .desc-content {
+            color: #444;
+        }
+
+        /* 小导航：GIF隐藏后才显示 */
+        .mini-nav {
+            width: 100%;
+            max-width: 420px;
+            display: flex;
+            gap: 20px;
+            padding: 0 10px;
+            overflow-x: auto;
+            margin-bottom: 10px;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s;
+        }
+        .mini-nav.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        .mini-nav::-webkit-scrollbar { display: none; }
+        .mini-nav-item {
+            white-space: nowrap;
+            font-size: 15px;
+            font-weight: 500;
+            color: #fff;
+            cursor: pointer;
+            padding: 4px 2px;
+        }
+        body.light .mini-nav-item {
+            color: #222;
+        }
+
         .list {
             padding: 10px 20px 60px;
             display: flex; flex-direction: column; gap: 10px;
@@ -365,9 +489,12 @@
         .item.left { width: 85%; align-self: flex-start; }
         .item.right { width: 85%; align-self: flex-end; }
 
-        .carousel.hide {
-            opacity: 0; visibility: hidden;
-            height: 0; margin: 0;
+        .carousel.hide,
+        .desc-bar.hide {
+            opacity: 0;
+            visibility: hidden;
+            height: 0;
+            margin: 0;
         }
 
         .toast {
@@ -394,6 +521,7 @@
 <div class="sidebar-mask" id="sidebarMask"></div>
 
 <div class="center-time-box" id="centerTimeBox">
+    <div class="time-close" id="timeClose">×</div>
     <div class="center-date" id="centerDate"></div>
     <div class="center-week" id="centerWeek"></div>
 </div>
@@ -421,6 +549,7 @@
     <div class="sidebar-item">反馈建议</div>
 </div>
 
+<!-- 顶部栏 -->
 <div class="top-bar">
     <div class="logo" id="logoBtn">
         <img src="favicon.png" alt="Logo">
@@ -435,6 +564,14 @@
     <div class="top-btn" id="themeBtn">昼</div>
     <div class="top-btn" id="fullBtn">⛶</div>
     <div class="top-btn menu-toggle" id="menuBtn">☰</div>
+</div>
+
+<!-- 底部悬浮导航栏 -->
+<div class="bottom-bar">
+    <div class="bottom-item">获取</div>
+    <div class="bottom-item">开源</div>
+    <div class="bottom-item">探索</div>
+    <div class="bottom-item">本地</div>
 </div>
 
 <div class="toast" id="toast">该内容不存在</div>
@@ -456,27 +593,48 @@
         <div class="shortcut">更多</div>
     </div>
     <div class="scroll-tip">︿ 向上滑动展开列表</div>
+
     <div class="carousel" id="carousel">
         <img src="jh000gif.gif" class="carousel-item active">
         <img src="jh000gif.gif" class="carousel-item">
         <img src="jh000gif.gif" class="carousel-item">
     </div>
-</div>
 
-<div class="list" id="list">
-    <div class="item left" onclick="window.open('https://gatehumex.com','_blank')">Gatehumex</div>
-    <div class="item right" onclick="window.open('https://tranzelo-eternal.com','_blank')">Tranzelo-Eternal</div>
-    <div class="item left" onclick="window.open('https://tranzelo-endless.com','_blank')">Tranzelo-Endless</div>
-    <div class="item right" onclick="window.open('https://tranzello-immortal.com','_blank')">Tranzello-Immortal</div>
-    <div class="item left" onclick="window.open('https://fishbone-engine.com','_blank')">Fishbone Engine</div>
-    <div class="item right" onclick="window.open('https://github.com/tanfo','_blank')">TanFo's Github</div>
-    <div class="item left" onclick="window.open('https://operator-api.com','_blank')">Operator API</div>
-    <div class="item right" onclick="window.open('https://tfj-pan.com','_blank')">TFJ云盘下载服务</div>
-    <div class="item left" onclick="window.open('https://my-collection.com','_blank')">收藏网站集合</div>
-    <div class="item right" onclick="window.open('https://resource-box.com','_blank')">资源box</div>
-    <div class="item left" onclick="window.open('https://tanfojze-dev.com','_blank')">Tanfojze开发者服务 移动端下载</div>
-    <div class="item right" onclick="window.open('https://contact-me.com','_blank')">我的联系方式</div>
-    <div class="item left" onclick="window.open('https://tools.tanfojze.com','_blank')">网站小工具</div>
+    <div class="desc-bar" id="descBar">
+        <div class="desc-header" id="descHeader">
+            <span>网站介绍</span>
+            <span>▼</span>
+        </div>
+        <div class="desc-content">
+            本站是由 LamdaGames 开发的综合导航与工具集合平台，专注于提供简洁高效的使用体验。<br><br>
+            这里汇集了各类开发资源、项目展示、工具入口与个人作品，致力于为用户打造一站式服务中心。<br><br>
+            界面采用现代化设计，支持深色/浅色模式切换、动态雨雪特效、背景音乐与全屏体验，适配手机与电脑端。
+        </div>
+    </div>
+
+    <!-- 小导航：GIF隐藏后才显示 -->
+    <div class="mini-nav">
+        <div class="mini-nav-item">主页</div>
+        <div class="mini-nav-item">资源</div>
+        <div class="mini-nav-item">关于</div>
+        <div class="mini-nav-item">简介</div>
+    </div>
+
+    <div class="list" id="list">
+        <div class="item left" onclick="window.open('https://gatehumex.com','_blank')">Gatehumex</div>
+        <div class="item right" onclick="window.open('https://tranzelo-eternal.com','_blank')">Tranzelo-Eternal</div>
+        <div class="item left" onclick="window.open('https://tranzelo-endless.com','_blank')">Tranzelo-Endless</div>
+        <div class="item right" onclick="window.open('https://tranzello-immortal.com','_blank')">Tranzello-Immortal</div>
+        <div class="item left" onclick="window.open('https://fishbone-engine.com','_blank')">Fishbone Engine</div>
+        <div class="item right" onclick="window.open('https://github.com/tanfo','_blank')">TanFo's Github</div>
+        <div class="item left" onclick="window.open('https://operator-api.com','_blank')">Operator API</div>
+        <div class="item right" onclick="window.open('https://tfj-pan.com','_blank')">TFJ云盘下载服务</div>
+        <div class="item left" onclick="window.open('https://my-collection.com','_blank')">收藏网站集合</div>
+        <div class="item right" onclick="window.open('https://resource-box.com','_blank')">资源box</div>
+        <div class="item left" onclick="window.open('https://tanfojze-dev.com','_blank')">Tanfojze开发者服务 移动端下载</div>
+        <div class="item right" onclick="window.open('https://contact-me.com','_blank')">我的联系方式</div>
+        <div class="item left" onclick="window.open('https://tools.tanfojze.com','_blank')">网站小工具</div>
+    </div>
 </div>
 
 <audio id="bgm" loop preload="auto">
@@ -627,7 +785,14 @@ function updateActive() {
 carousel.addEventListener('scroll', updateActive);
 updateActive();
 
+const descBar = document.getElementById('descBar');
+const descHeader = document.getElementById('descHeader');
+descHeader.onclick = () => {
+    descBar.classList.toggle('expand');
+};
+
 const list = document.getElementById('list');
+const miniNav = document.querySelector('.mini-nav');
 let cur = 0;
 const items = document.querySelectorAll('.item');
 function showItems() {
@@ -640,14 +805,19 @@ function resetItems() {
     items.forEach(i => i.classList.remove('show'));
     cur = 0;
 }
+
 window.addEventListener('scroll', () => {
     if (window.scrollY > 100) {
         carousel.classList.add('hide');
+        descBar.classList.add('hide');
         list.classList.add('show');
+        miniNav.classList.add('show');
         showItems();
     } else {
         carousel.classList.remove('hide');
+        descBar.classList.remove('hide');
         list.classList.remove('show');
+        miniNav.classList.remove('show');
         resetItems();
     }
 });
@@ -661,6 +831,7 @@ const leftSidebarClose = document.getElementById('leftSidebarClose');
 const rightSidebarClose = document.getElementById('rightSidebarClose');
 const sidebarMask = document.getElementById('sidebarMask');
 const centerTimeBox = document.getElementById('centerTimeBox');
+const timeClose = document.getElementById('timeClose');
 const centerDate = document.getElementById('centerDate');
 const centerWeek = document.getElementById('centerWeek');
 const body = document.body;
@@ -668,6 +839,24 @@ const body = document.body;
 siteTitleBtn.onclick = () => {
     window.open('https://lamdagames2024.github.io/home000/', '_blank');
 };
+
+// 长按Logo显示时间
+let longPressTimer;
+logoBtn.addEventListener('mousedown', () => {
+    longPressTimer = setTimeout(() => {
+        updateTimeBox();
+        centerTimeBox.classList.add('show');
+    }, 500);
+});
+logoBtn.addEventListener('mouseup', () => clearTimeout(longPressTimer));
+logoBtn.addEventListener('mouseleave', () => clearTimeout(longPressTimer));
+logoBtn.addEventListener('touchstart', () => {
+    longPressTimer = setTimeout(() => {
+        updateTimeBox();
+        centerTimeBox.classList.add('show');
+    }, 500);
+});
+logoBtn.addEventListener('touchend', () => clearTimeout(longPressTimer));
 
 function updateTimeBox() {
     const now = new Date();
@@ -680,23 +869,20 @@ function updateTimeBox() {
     centerWeek.textContent = weekArr[wd];
 }
 
+timeClose.onclick = () => {
+    centerTimeBox.classList.remove('show');
+};
+
+centerTimeBox.onclick = (e) => e.stopPropagation();
+window.onclick = () => {
+    centerTimeBox.classList.remove('show');
+};
+
 function closeAllSidebars() {
     leftSidebar.classList.remove('show');
     rightSidebar.classList.remove('show');
     sidebarMask.classList.remove('show');
-    centerTimeBox.classList.remove('show');
     body.classList.remove('sidebar-open');
-}
-
-function checkBothSidebar() {
-    const l = leftSidebar.classList.contains('show');
-    const r = rightSidebar.classList.contains('show');
-    if (l && r) {
-        centerTimeBox.classList.add('show');
-        updateTimeBox();
-    } else {
-        centerTimeBox.classList.remove('show');
-    }
 }
 
 logoBtn.onclick = () => {
@@ -707,7 +893,6 @@ logoBtn.onclick = () => {
         sidebarMask.classList.add('show');
         body.classList.add('sidebar-open');
     }
-    checkBothSidebar();
 };
 
 menuBtn.onclick = () => {
@@ -718,30 +903,14 @@ menuBtn.onclick = () => {
         sidebarMask.classList.add('show');
         body.classList.add('sidebar-open');
     }
-    checkBothSidebar();
 };
 
-leftSidebarClose.onclick = () => {
-    closeAllSidebars();
-};
+leftSidebarClose.onclick = closeAllSidebars;
+rightSidebarClose.onclick = closeAllSidebars;
+sidebarMask.onclick = closeAllSidebars;
 
-rightSidebarClose.onclick = () => {
-    closeAllSidebars();
-};
-
-sidebarMask.onclick = () => {
-    closeAllSidebars();
-};
-
-leftSidebar.onclick = (e) => {
-    e.stopPropagation();
-};
-rightSidebar.onclick = (e) => {
-    e.stopPropagation();
-};
-centerTimeBox.onclick = (e) => {
-    e.stopPropagation();
-};
+leftSidebar.onclick = e => e.stopPropagation();
+rightSidebar.onclick = e => e.stopPropagation();
 </script>
 </body>
 </html>
