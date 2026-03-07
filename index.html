@@ -20,50 +20,58 @@
             background-color: #252525;
             color: #fff;
             font-family: system-ui, sans-serif;
-            padding-bottom: 60px;
         }
 
-        /* 背景底色 */
-        .bg-base {
+        /* ========== 全屏视频背景 ========== */
+        .video-container {
             position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: #252525;
-            z-index: -3;
-        }
-
-        /* 置顶视频背景 */
-        .header-video-wrapper {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             z-index: -1;
+            overflow: hidden;
+        }
+
+        .video-container video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        /* 视频底部渐变，和背景融合 */
+        .video-fade {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 60vh;
+            background: linear-gradient(to top, #252525, transparent);
             pointer-events: none;
         }
-        .header-video {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            object-fit: cover;
-        }
-        .video-mask {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: linear-gradient(to bottom, rgba(37,37,37,0.2), #252525);
-        }
 
+        /* ========== 标题区域 在视频上层 ========== */
         .header {
             position: relative;
+            z-index: 10;
             text-align: center;
             padding: 70px 24px 20px;
-            z-index: 2;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
+
         h1 {
             font-size: 32px;
             margin-bottom: 12px;
             color: #fff;
         }
+
         .slogan {
             font-size: 17px;
             color: #ccc;
@@ -110,7 +118,7 @@
             to   { opacity: 1; transform: translateY(-6px); }
         }
 
-        /* GIF 区域：默认显示 */
+        /* GIF 区域 */
         .gif-box {
             width: 100%;
             max-width: 280px;
@@ -124,19 +132,17 @@
             opacity: 0;
             visibility: hidden;
             height: 0;
-            margin: 0 auto;
+            margin: 0;
         }
         .gif-box img {
             width: 100%;
             height: auto;
-            display: block;
             border-radius: 12px;
-            transform: translateZ(0);
         }
 
-        /* 选项列表：默认隐藏 */
+        /* 选项列表 */
         .list {
-            padding: 10px 22px;
+            padding: 10px 22px 60px;
             display: flex;
             flex-direction: column;
             gap: 14px;
@@ -200,18 +206,18 @@
 
 <body>
 
-<div class="bg-base"></div>
-
-<!-- 置顶视频背景 -->
-<div class="header-video-wrapper">
-    <video class="header-video" autoplay muted loop playsinline>
+<!-- ========== 视频背景 ========== -->
+<div class="video-container">
+    <video autoplay muted loop playsinline>
         <source src="tajps000background.mp4" type="video/mp4">
     </video>
-    <div class="video-mask"></div>
+    <div class="video-fade"></div>
 </div>
 
+<!-- 提示框 -->
 <div class="toast" id="toast">该内容不存在</div>
 
+<!-- 标题区域（在视频上面） -->
 <div class="header">
     <h1>TanFoJze - 开发者个人主页</h1>
     <div class="slogan">明天会更好，向往美好</div>
@@ -223,13 +229,13 @@
 
     <div class="scroll-tip">↑ 向上滑动探索更多</div>
 
-    <!-- GIF -->
+    <!-- GIF 文件名改为 jh000.gif -->
     <div class="gif-box" id="gifBox">
-        <img src="jh000gif.gif" alt="animation">
+        <img src="jh000.gif" alt="animation">
     </div>
 </div>
 
-<!-- 选项卡 -->
+<!-- 选项列表 -->
 <div class="list" id="list">
     <div class="item left-long">选项 01</div>
     <div class="item right-long">选项 02</div>
@@ -273,51 +279,36 @@
         if (e.key === 'Enter') doSearch();
     });
 
-    // ======================
-    // 核心逻辑：滑动显示/隐藏
-    // ======================
+    // 滑动控制
     const gifBox = document.getElementById('gifBox');
     const list = document.getElementById('list');
     const items = document.querySelectorAll('.item');
     let currentItem = 0;
-    let lastScrollY = 0;
-
-    // 滑到一定距离才显示列表
-    const SHOW_LIST_AFTER = 80;
 
     window.addEventListener('scroll', () => {
-        const scrollY = window.scrollY;
-
-        // 向上滑动超过一定距离：隐藏GIF，显示列表
-        if (scrollY > SHOW_LIST_AFTER) {
+        if (window.scrollY > 80) {
             gifBox.classList.add('hide');
             list.classList.add('show');
-            showItemsOneByOne();
-        } 
-        // 滑回顶部：显示GIF，隐藏列表，重置选项
-        else {
+            showItems();
+        } else {
             gifBox.classList.remove('hide');
             list.classList.remove('show');
             resetItems();
         }
-
-        lastScrollY = scrollY;
     });
 
-    // 逐个显示选项
-    function showItemsOneByOne() {
+    function showItems() {
         if (currentItem >= items.length) return;
         const rect = items[currentItem].getBoundingClientRect();
         if (rect.top < window.innerHeight - 80) {
             items[currentItem].classList.add('show');
             currentItem++;
-            setTimeout(showItemsOneByOne, 140);
+            setTimeout(showItems, 140);
         }
     }
 
-    // 重置所有选项为隐藏
     function resetItems() {
-        items.forEach(item => item.classList.remove('show'));
+        items.forEach(i => i.classList.remove('show'));
         currentItem = 0;
     }
 </script>
