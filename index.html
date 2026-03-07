@@ -11,43 +11,25 @@
             padding: 0;
             box-sizing: border-box;
         }
-
         html, body {
             width: 100%;
             min-height: 100vh;
             overflow-x: hidden;
         }
-
         body {
             background-color: #252525;
             color: #fff;
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            font-family: system-ui, sans-serif;
             padding-bottom: 60px;
         }
 
-        /* 背景流光 */
+        /* 流畅背景 */
         .bg {
             position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
-            background: radial-gradient(ellipse at center, #383838 0%, #252525 50%, #1a1a1a 100%);
+            background: #252525;
             z-index: -2;
-        }
-
-        .light {
-            position: fixed;
-            width: 100%; height: 100%;
-            background: radial-gradient(circle at 50% 50%, rgba(100,181,246,0.08), transparent 50%);
-            filter: blur(40px);
-            animation: lightMove 12s linear infinite alternate;
-            z-index: -1;
-            opacity: 0.5;
-        }
-
-        @keyframes lightMove {
-            0% { transform: translate(0,0) scale(1); }
-            50% { transform: translate(10px,-10px) scale(1.1); }
-            100% { transform: translate(-10px,10px) scale(1); }
         }
 
         .header {
@@ -56,21 +38,18 @@
             position: relative;
             z-index: 2;
         }
-
         h1 {
             font-size: 32px;
             margin-bottom: 12px;
             color: #fff;
-            font-weight: 600;
         }
-
         .slogan {
             font-size: 17px;
             color: #ccc;
             margin-bottom: 28px;
         }
 
-        /* 搜索框 + 按钮 */
+        /* 搜索框 */
         .search-row {
             display: flex;
             gap: 10px;
@@ -78,7 +57,6 @@
             max-width: 420px;
             margin: 0 auto 22px;
         }
-
         .search-row input {
             flex: 1;
             padding: 14px 18px;
@@ -88,29 +66,14 @@
             font-size: 16px;
             background: rgba(255,255,255,0.08);
             color: #fff;
-            backdrop-filter: blur(20px);
-            transition: all 0.3s ease;
         }
-
-        .search-row input:focus {
-            background: rgba(255,255,255,0.12);
-            border-color: rgba(100,181,246,0.3);
-        }
-
         .search-row button {
             padding: 14px 16px;
             border: 1px solid rgba(255,255,255,0.1);
             border-radius: 16px;
             background: rgba(255,255,255,0.08);
             color: #fff;
-            font-size: 16px;
-            backdrop-filter: blur(20px);
             cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .search-row button:hover {
-            background: rgba(255,255,255,0.15);
         }
 
         /* 上滑提示 */
@@ -119,30 +82,31 @@
             font-size: 14px;
             color: #aaa;
             margin: 10px auto 36px;
-            opacity: 0.8;
-            animation: fadeUpDown 2s infinite alternate ease-in-out;
+            animation: fadeUpDown 2s infinite alternate;
         }
-
         @keyframes fadeUpDown {
             from { opacity: 0.5; transform: translateY(0); }
             to   { opacity: 1; transform: translateY(-6px); }
         }
 
-        /* ========== GIF 展示区域 ========== */
-        .gif-area {
+        /* ========== GIF 区域：流畅播放优化 ========== */
+        .gif-box {
             width: 100%;
-            max-width: 320px;
+            max-width: 280px;
             margin: 0 auto 40px;
             text-align: center;
         }
-
-        .gif-area img {
+        .gif-box img {
             width: 100%;
             height: auto;
+            display: block;
             border-radius: 12px;
+            /* 保证 GIF 流畅播放 */
+            image-rendering: auto;
+            transform: translateZ(0);
         }
 
-        /* 卡片列表 */
+        /* 列表 */
         .list {
             padding: 10px 22px;
             display: flex;
@@ -151,41 +115,33 @@
             position: relative;
             z-index: 2;
         }
-
         .item {
             background: rgba(255,255,255,0.07);
             border: 1px solid rgba(255,255,255,0.1);
             padding: 20px 22px;
             border-radius: 16px;
-            font-size: 16px;
-            backdrop-filter: blur(20px);
             transition: all 0.5s ease;
             opacity: 0;
             transform: translateY(60px);
         }
-
         .item.show {
             opacity: 1;
             transform: translateY(0);
         }
-
         .item:hover {
             background: rgba(255,255,255,0.13);
-            border-color: rgba(100,181,246,0.2);
             transform: scale(1.02);
         }
-
         .item.left-long {
             width: 76%;
             align-self: flex-start;
         }
-
         .item.right-long {
             width: 76%;
             align-self: flex-end;
         }
 
-        /* 顶部提示消息 */
+        /* 提示弹窗 */
         .toast {
             position: fixed;
             top: 20px;
@@ -195,14 +151,10 @@
             color: #fff;
             padding: 12px 24px;
             border-radius: 12px;
-            font-size: 14px;
             z-index: 999;
-            backdrop-filter: blur(10px);
             opacity: 0;
             transition: all 0.4s ease;
-            white-space: nowrap;
         }
-
         .toast.show {
             transform: translateX(-50%) translateY(0);
             opacity: 1;
@@ -213,7 +165,6 @@
 <body>
 
 <div class="bg"></div>
-<div class="light"></div>
 <div class="toast" id="toast">该内容不存在</div>
 
 <div class="header">
@@ -227,9 +178,9 @@
 
     <div class="scroll-tip">↑ 向上滑动探索更多</div>
 
-    <!-- ========== 这里放你的 GIF ========== -->
-    <div class="gif-area">
-        <img src="jh000gif.gif" alt="Planet Animation">
+    <!-- ========== 你的 GIF，无限循环 + 流畅播放 ========== -->
+    <div class="gif-box">
+        <img src="planet.gif" alt="animation">
     </div>
 </div>
 
@@ -257,25 +208,20 @@
 </div>
 
 <script>
+    // 搜索
     const searchInput = document.getElementById('searchInput');
     const searchBtn = document.getElementById('searchBtn');
     const toast = document.getElementById('toast');
-    let toastTimer = null;
+    let toastTimer;
 
     function showToast() {
         toast.classList.add('show');
         clearTimeout(toastTimer);
-        toastTimer = setTimeout(() => {
-            toast.classList.remove('show');
-        }, 3000);
+        toastTimer = setTimeout(() => toast.classList.remove('show'), 3000);
     }
-
     function doSearch() {
-        const val = searchInput.value.trim();
-        if (!val) return;
-        showToast();
+        if (searchInput.value.trim()) showToast();
     }
-
     searchBtn.addEventListener('click', doSearch);
     searchInput.addEventListener('keydown', e => {
         if (e.key === 'Enter') doSearch();
@@ -284,21 +230,19 @@
     // 滑动逐个显示
     const items = document.querySelectorAll('.item');
     let current = 0;
-
     function showOneByOne() {
         if (current >= items.length) return;
-        const el = items[current];
-        const rect = el.getBoundingClientRect();
+        const rect = items[current].getBoundingClientRect();
         if (rect.top < window.innerHeight - 80) {
-            el.classList.add('show');
+            items[current].classList.add('show');
             current++;
             setTimeout(showOneByOne, 140);
         }
     }
-
     window.addEventListener('scroll', showOneByOne);
     showOneByOne();
 </script>
 
 </body>
 </html>
+
