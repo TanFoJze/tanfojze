@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LamdaGames Tanfojze</title>
-    <!-- 网页图标（顶部标签页图标） -->
     <link rel="icon" type="image/png" href="favicon.png">
     <style>
         * {
@@ -44,7 +43,6 @@
             background: rgba(255,255,255,0.85);
         }
 
-        /* ========== 你的 LOGO ========== */
         .logo {
             width: 32px;
             height: 32px;
@@ -75,33 +73,51 @@
 
         .spacer { flex: 1; }
 
-        .theme-toggle {
+        .top-btn {
             width: 36px; height: 36px;
             display: grid; place-items: center;
             border-radius: 50%; cursor: pointer;
-        }
-        .menu-toggle {
-            width: 36px; height: 36px;
-            display: grid; place-items: center;
-            border-radius: 50%; cursor: pointer;
-            font-size: 20px;
+            font-size: 16px;
         }
 
         .header {
             padding-top: 70px;
             min-height: 100vh;
-            display: flex; flex-direction: column;
+            display: flex;
+            flex-direction: column;
             align-items: center;
             padding-inline: 24px;
+            position: relative;
+            z-index: 0;
+        }
+
+        /* ========== TanFoJze 背景图：上不透明 → 下透明渐变 ========== */
+        .header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("bg.jpg");
+            background-size: cover;
+            background-position: center top;
+            z-index: -1;
+            -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 70%, transparent 100%);
+            mask-image: linear-gradient(to bottom, #000 0%, #000 70%, transparent 100%);
         }
 
         h1 {
             font-size: 28px;
             margin-bottom: 8px;
+            position: relative;
+            z-index: 1;
         }
         .slogan {
             font-size: 14px; color: #888;
             margin-bottom: 24px;
+            position: relative;
+            z-index: 1;
         }
         body.light .slogan { color: #666; }
 
@@ -151,10 +167,9 @@
 
         .scroll-tip {
             font-size: 12px; color: #888;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
         }
 
-        /* ========== 轮播：可滑动，但取消自动归正 ========== */
         .carousel {
             width: 100%;
             max-width: 420px;
@@ -167,11 +182,9 @@
             overflow-x: auto;
             overflow-y: hidden;
             scroll-behavior: smooth;
-            margin-bottom: 30px;
+            margin-bottom: 10px;
         }
-        .carousel::-webkit-scrollbar {
-            height: 0;
-        }
+        .carousel::-webkit-scrollbar { height: 0; }
         .carousel-item {
             width: 280px;
             height: 160px;
@@ -187,7 +200,7 @@
         }
 
         .list {
-            padding: 20px 24px 80px;
+            padding: 10px 24px 80px;
             display: flex; flex-direction: column; gap: 14px;
             opacity: 0; visibility: hidden;
             transition: opacity 0.6s;
@@ -201,12 +214,8 @@
             opacity: 0; transform: translateY(60px);
             transition: all 0.5s;
         }
-        body.light .item {
-            background: #fff;
-        }
-        .item.show {
-            opacity: 1; transform: translateY(0);
-        }
+        body.light .item { background: #fff; }
+        .item.show { opacity: 1; transform: translateY(0); }
         .item.left { width: 75%; align-self: flex-start; }
         .item.right { width: 75%; align-self: flex-end; }
 
@@ -214,6 +223,23 @@
             opacity: 0; visibility: hidden;
             height: 0; margin: 0;
         }
+
+        .toast {
+            position: fixed;
+            top: 70px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #333;
+            color: #fff;
+            padding: 10px 16px;
+            border-radius: 12px;
+            font-size: 14px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+            z-index: 9999;
+        }
+        .toast.show { opacity: 1; pointer-events: auto; }
     </style>
 </head>
 
@@ -228,17 +254,22 @@
         <div class="dev-tag">开发人员</div>
     </div>
     <div class="spacer"></div>
-    <div class="theme-toggle" id="themeBtn">昼</div>
-    <div class="menu-toggle">☰</div>
+
+    <div class="top-btn" id="musicBtn">♪</div>
+    <div class="top-btn" id="themeBtn">昼</div>
+    <div class="top-btn" id="fullBtn">⛶</div>
+    <div class="top-btn menu-toggle">☰</div>
 </div>
+
+<div class="toast" id="toast">该内容不存在</div>
 
 <div class="header">
     <h1>TanFoJze</h1>
     <div class="slogan">x仕x.Looking forward to tomorrow</div>
 
     <div class="search-row">
-        <input placeholder="搜索..." type="text" id="search">
-        <button>搜索</button>
+        <input placeholder="搜索..." type="text" id="searchInput">
+        <button id="searchBtn">搜索</button>
     </div>
 
     <div class="shortcuts">
@@ -269,17 +300,52 @@
     <div class="item right">选项 06</div>
 </div>
 
+<audio id="bgm" loop preload="auto">
+    <source src="bgm.mp3" type="audio/mpeg">
+
+
 <script>
-    document.addEventListener('click', () => {
-        if (document.documentElement.requestFullscreen) {
-            document.documentElement.requestFullscreen();
-        }
-    }, { once: true });
+    const toast = document.getElementById('toast');
+    function showToast(msg) {
+        toast.textContent = msg;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 2000);
+    }
+
+    const searchInput = document.getElementById('searchInput');
+    const searchBtn = document.getElementById('searchBtn');
+    searchBtn.onclick = () => {
+        const v = searchInput.value.trim();
+        showToast('该内容不存在');
+    };
 
     const themeBtn = document.getElementById('themeBtn');
     themeBtn.onclick = () => {
         document.body.classList.toggle('light');
         themeBtn.textContent = document.body.classList.contains('light') ? '夜' : '昼';
+    };
+
+    const fullBtn = document.getElementById('fullBtn');
+    fullBtn.onclick = () => {
+        if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen();
+        } else {
+            document.exitFullscreen();
+        }
+    };
+
+    const bgm = document.getElementById('bgm');
+    const musicBtn = document.getElementById('musicBtn');
+    let playing = false;
+    musicBtn.onclick = () => {
+        if (!playing) {
+            bgm.play();
+            musicBtn.textContent = '♫';
+        } else {
+            bgm.pause();
+            musicBtn.textContent = '♪';
+        }
+        playing = !playing;
     };
 
     const carousel = document.getElementById('carousel');
