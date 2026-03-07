@@ -242,7 +242,6 @@
             font-size: 16px;
         }
 
-        /* 底部悬浮导航栏 */
         .bottom-bar {
             position: fixed;
             bottom: 0;
@@ -400,7 +399,6 @@
             filter: brightness(1);
         }
 
-        /* 简介折叠栏 */
         .desc-bar {
             width: 100%;
             max-width: 420px;
@@ -438,7 +436,6 @@
             color: #444;
         }
 
-        /* 小导航：GIF隐藏后才显示 */
         .mini-nav {
             width: 100%;
             max-width: 420px;
@@ -549,7 +546,6 @@
     <div class="sidebar-item">反馈建议</div>
 </div>
 
-<!-- 顶部栏 -->
 <div class="top-bar">
     <div class="logo" id="logoBtn">
         <img src="favicon.png" alt="Logo">
@@ -566,7 +562,6 @@
     <div class="top-btn menu-toggle" id="menuBtn">☰</div>
 </div>
 
-<!-- 底部悬浮导航栏 -->
 <div class="bottom-bar">
     <div class="bottom-item">获取</div>
     <div class="bottom-item">开源</div>
@@ -612,7 +607,6 @@
         </div>
     </div>
 
-    <!-- 小导航：GIF隐藏后才显示 -->
     <div class="mini-nav">
         <div class="mini-nav-item">主页</div>
         <div class="mini-nav-item">资源</div>
@@ -640,147 +634,191 @@
 <audio id="bgm" loop preload="auto">
     <source src="bgm.mp3" type="audio/mpeg">
 
+
 <script>
+const Storage = {
+  set(key, val) {
+    localStorage.setItem(key, JSON.stringify(val));
+  },
+  get(key, def = null) {
+    try {
+      const item = localStorage.getItem(key);
+      return item ? JSON.parse(item) : def;
+    } catch (e) {
+      return def;
+    }
+  }
+};
+
+const savedConfig = Storage.get('appConfig', {
+  theme: 'dark',
+  music: true,
+  effect: 'off'
+});
+
 const canvas = document.getElementById('particleCanvas');
 const ctx = canvas.getContext('2d');
-let effectMode = 'off';
+let effectMode = savedConfig.effect;
 const effectBtn = document.getElementById('effectBtn');
 let particles = [];
 let animating = true;
 
 function resizeCanvas() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
 }
 resizeCanvas();
 window.addEventListener('resize', resizeCanvas);
 
 function createParticles() {
-    particles = [];
-    let count = 0;
-    if (effectMode === 'rain') count = 200;
-    if (effectMode === 'snow') count = 150;
-    for (let i = 0; i < count; i++) {
-        particles.push({
-            x: Math.random() * canvas.width,
-            y: Math.random() * canvas.height,
-            s: Math.random() + 0.5
-        });
-    }
+  particles = [];
+  let count = 0;
+  if (effectMode === 'rain') count = 200;
+  if (effectMode === 'snow') count = 150;
+  for (let i = 0; i < count; i++) {
+    particles.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      s: Math.random() + 0.5
+    });
+  }
 }
 
 function draw() {
-    if (!animating) return;
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    if (effectMode !== 'off') {
-        if (effectMode === 'rain') {
-            ctx.fillStyle = 'rgba(255,255,255,0.55)';
-            particles.forEach(p => {
-                ctx.fillRect(p.x, p.y, 1.2, 10 + p.s * 4);
-                p.y += 10 + p.s * 4;
-                if (p.y > canvas.height) p.y = -30;
-            });
-        } else {
-            ctx.fillStyle = 'rgba(255,255,255,0.8)';
-            particles.forEach(p => {
-                ctx.beginPath();
-                ctx.arc(p.x, p.y, 1.8 + p.s, 0, Math.PI * 2);
-                ctx.fill();
-                p.y += 2 + p.s;
-                p.x += Math.sin(p.y * 0.03) * 0.6;
-                if (p.y > canvas.height) {
-                    p.y = -10;
-                    p.x = Math.random() * canvas.width;
-                }
-            });
+  if (!animating) return;
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  if (effectMode !== 'off') {
+    if (effectMode === 'rain') {
+      ctx.fillStyle = 'rgba(255,255,255,0.55)';
+      particles.forEach(p => {
+        ctx.fillRect(p.x, p.y, 1.2, 10 + p.s * 4);
+        p.y += 10 + p.s * 4;
+        if (p.y > canvas.height) p.y = -30;
+      });
+    } else {
+      ctx.fillStyle = 'rgba(255,255,255,0.8)';
+      particles.forEach(p => {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, 1.8 + p.s, 0, Math.PI * 2);
+        ctx.fill();
+        p.y += 2 + p.s;
+        p.x += Math.sin(p.y * 0.03) * 0.6;
+        if (p.y > canvas.height) {
+          p.y = -10;
+          p.x = Math.random() * canvas.width;
         }
+      });
     }
-    requestAnimationFrame(draw);
+  }
+  requestAnimationFrame(draw);
 }
 
 function startAnim() {
-    if (!animating) {
-        animating = true;
-        draw();
-    }
+  if (!animating) {
+    animating = true;
+    draw();
+  }
 }
 createParticles();
 draw();
 
 effectBtn.onclick = () => {
-    if (effectMode === 'rain') {
-        effectMode = 'snow';
-        effectBtn.textContent = '雪';
-    } else if (effectMode === 'snow') {
-        effectMode = 'off';
-        effectBtn.textContent = '无';
-    } else {
-        effectMode = 'rain';
-        effectBtn.textContent = '雨';
-    }
-    createParticles();
-    startAnim();
+  if (effectMode === 'rain') {
+    effectMode = 'snow';
+    effectBtn.textContent = '雪';
+  } else if (effectMode === 'snow') {
+    effectMode = 'off';
+    effectBtn.textContent = '无';
+  } else {
+    effectMode = 'rain';
+    effectBtn.textContent = '雨';
+  }
+  savedConfig.effect = effectMode;
+  Storage.set('appConfig', savedConfig);
+  createParticles();
+  startAnim();
 };
 
 const toast = document.getElementById('toast');
 function showToast(msg) {
-    toast.textContent = msg;
-    toast.classList.add('show');
-    setTimeout(() => toast.classList.remove('show'), 2000);
+  toast.textContent = msg;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 2000);
 }
 
 const searchInput = document.getElementById('searchInput');
 const searchBtn = document.getElementById('searchBtn');
 searchBtn.onclick = () => {
-    showToast('该内容不存在');
+  showToast('该内容不存在');
 };
 
 const themeBtn = document.getElementById('themeBtn');
+const body = document.body;
+
+if (savedConfig.theme === 'light') {
+  body.classList.add('light');
+  themeBtn.textContent = '夜';
+} else {
+  themeBtn.textContent = '昼';
+}
+
 themeBtn.onclick = () => {
-    document.body.classList.toggle('light');
-    themeBtn.textContent = document.body.classList.contains('light') ? '夜' : '昼';
+  body.classList.toggle('light');
+  const isLight = body.classList.contains('light');
+  themeBtn.textContent = isLight ? '夜' : '昼';
+  savedConfig.theme = isLight ? 'light' : 'dark';
+  Storage.set('appConfig', savedConfig);
 };
 
 const fullBtn = document.getElementById('fullBtn');
 fullBtn.onclick = () => {
-    if (!document.fullscreenElement) {
-        document.documentElement.requestFullscreen();
-    } else {
-        document.exitFullscreen();
-    }
+  if (!document.fullscreenElement) {
+    document.documentElement.requestFullscreen();
+  } else {
+    document.exitFullscreen();
+  }
 };
 
 const bgm = document.getElementById('bgm');
 const musicBtn = document.getElementById('musicBtn');
-let playing = true;
+let playing = savedConfig.music;
+
 window.addEventListener('load', () => {
+  if (playing) {
     bgm.play().catch(() => {});
+    musicBtn.textContent = '♫';
+  } else {
+    musicBtn.textContent = '静';
+  }
 });
+
 musicBtn.onclick = () => {
-    if (playing) {
-        bgm.pause();
-        musicBtn.textContent = '静';
-    } else {
-        bgm.play();
-        musicBtn.textContent = '♫';
-    }
-    playing = !playing;
+  if (playing) {
+    bgm.pause();
+    musicBtn.textContent = '静';
+  } else {
+    bgm.play().catch(() => {});
+    musicBtn.textContent = '♫';
+  }
+  playing = !playing;
+  savedConfig.music = playing;
+  Storage.set('appConfig', savedConfig);
 };
 
 const carousel = document.getElementById('carousel');
 function updateActive() {
-    const items = document.querySelectorAll('.carousel-item');
-    const rect = carousel.getBoundingClientRect();
-    const center = rect.left + rect.width / 2;
-    items.forEach(el => {
-        const r = el.getBoundingClientRect();
-        const c = r.left + r.width / 2;
-        if (Math.abs(c - center) < r.width / 1.5) {
-            el.classList.add('active');
-        } else {
-            el.classList.remove('active');
-        }
-    });
+  const items = document.querySelectorAll('.carousel-item');
+  const rect = carousel.getBoundingClientRect();
+  const center = rect.left + rect.width / 2;
+  items.forEach(el => {
+    const r = el.getBoundingClientRect();
+    const c = r.left + r.width / 2;
+    if (Math.abs(c - center) < r.width / 1.5) {
+      el.classList.add('active');
+    } else {
+      el.classList.remove('active');
+    }
+  });
 }
 carousel.addEventListener('scroll', updateActive);
 updateActive();
@@ -788,7 +826,7 @@ updateActive();
 const descBar = document.getElementById('descBar');
 const descHeader = document.getElementById('descHeader');
 descHeader.onclick = () => {
-    descBar.classList.toggle('expand');
+  descBar.classList.toggle('expand');
 };
 
 const list = document.getElementById('list');
@@ -796,30 +834,30 @@ const miniNav = document.querySelector('.mini-nav');
 let cur = 0;
 const items = document.querySelectorAll('.item');
 function showItems() {
-    if (cur >= items.length) return;
-    items[cur].classList.add('show');
-    cur++;
-    setTimeout(showItems, 120);
+  if (cur >= items.length) return;
+  items[cur].classList.add('show');
+  cur++;
+  setTimeout(showItems, 120);
 }
 function resetItems() {
-    items.forEach(i => i.classList.remove('show'));
-    cur = 0;
+  items.forEach(i => i.classList.remove('show'));
+  cur = 0;
 }
 
 window.addEventListener('scroll', () => {
-    if (window.scrollY > 100) {
-        carousel.classList.add('hide');
-        descBar.classList.add('hide');
-        list.classList.add('show');
-        miniNav.classList.add('show');
-        showItems();
-    } else {
-        carousel.classList.remove('hide');
-        descBar.classList.remove('hide');
-        list.classList.remove('show');
-        miniNav.classList.remove('show');
-        resetItems();
-    }
+  if (window.scrollY > 100) {
+    carousel.classList.add('hide');
+    descBar.classList.add('hide');
+    list.classList.add('show');
+    miniNav.classList.add('show');
+    showItems();
+  } else {
+    carousel.classList.remove('hide');
+    descBar.classList.remove('hide');
+    list.classList.remove('show');
+    miniNav.classList.remove('show');
+    resetItems();
+  }
 });
 
 const logoBtn = document.getElementById('logoBtn');
@@ -834,75 +872,73 @@ const centerTimeBox = document.getElementById('centerTimeBox');
 const timeClose = document.getElementById('timeClose');
 const centerDate = document.getElementById('centerDate');
 const centerWeek = document.getElementById('centerWeek');
-const body = document.body;
 
 siteTitleBtn.onclick = () => {
-    window.open('https://lamdagames2024.github.io/home000/', '_blank');
+  window.open('https://lamdagames2024.github.io/home000/', '_blank');
 };
 
-// 长按Logo显示时间
 let longPressTimer;
 logoBtn.addEventListener('mousedown', () => {
-    longPressTimer = setTimeout(() => {
-        updateTimeBox();
-        centerTimeBox.classList.add('show');
-    }, 500);
+  longPressTimer = setTimeout(() => {
+    updateTimeBox();
+    centerTimeBox.classList.add('show');
+  }, 500);
 });
 logoBtn.addEventListener('mouseup', () => clearTimeout(longPressTimer));
 logoBtn.addEventListener('mouseleave', () => clearTimeout(longPressTimer));
 logoBtn.addEventListener('touchstart', () => {
-    longPressTimer = setTimeout(() => {
-        updateTimeBox();
-        centerTimeBox.classList.add('show');
-    }, 500);
+  longPressTimer = setTimeout(() => {
+    updateTimeBox();
+    centerTimeBox.classList.add('show');
+  }, 500);
 });
 logoBtn.addEventListener('touchend', () => clearTimeout(longPressTimer));
 
 function updateTimeBox() {
-    const now = new Date();
-    const y = now.getFullYear();
-    const m = now.getMonth() + 1;
-    const d = now.getDate();
-    const wd = now.getDay();
-    const weekArr = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
-    centerDate.textContent = y + '年' + m + '月' + d + '日';
-    centerWeek.textContent = weekArr[wd];
+  const now = new Date();
+  const y = now.getFullYear();
+  const m = now.getMonth() + 1;
+  const d = now.getDate();
+  const wd = now.getDay();
+  const weekArr = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+  centerDate.textContent = y + '年' + m + '月' + d + '日';
+  centerWeek.textContent = weekArr[wd];
 }
 
 timeClose.onclick = () => {
-    centerTimeBox.classList.remove('show');
+  centerTimeBox.classList.remove('show');
 };
 
 centerTimeBox.onclick = (e) => e.stopPropagation();
 window.onclick = () => {
-    centerTimeBox.classList.remove('show');
+  centerTimeBox.classList.remove('show');
 };
 
 function closeAllSidebars() {
-    leftSidebar.classList.remove('show');
-    rightSidebar.classList.remove('show');
-    sidebarMask.classList.remove('show');
-    body.classList.remove('sidebar-open');
+  leftSidebar.classList.remove('show');
+  rightSidebar.classList.remove('show');
+  sidebarMask.classList.remove('show');
+  body.classList.remove('sidebar-open');
 }
 
 logoBtn.onclick = () => {
-    const isOpen = leftSidebar.classList.contains('show');
-    closeAllSidebars();
-    if (!isOpen) {
-        leftSidebar.classList.add('show');
-        sidebarMask.classList.add('show');
-        body.classList.add('sidebar-open');
-    }
+  const isOpen = leftSidebar.classList.contains('show');
+  closeAllSidebars();
+  if (!isOpen) {
+    leftSidebar.classList.add('show');
+    sidebarMask.classList.add('show');
+    body.classList.add('sidebar-open');
+  }
 };
 
 menuBtn.onclick = () => {
-    const isOpen = rightSidebar.classList.contains('show');
-    closeAllSidebars();
-    if (!isOpen) {
-        rightSidebar.classList.add('show');
-        sidebarMask.classList.add('show');
-        body.classList.add('sidebar-open');
-    }
+  const isOpen = rightSidebar.classList.contains('show');
+  closeAllSidebars();
+  if (!isOpen) {
+    rightSidebar.classList.add('show');
+    sidebarMask.classList.add('show');
+    body.classList.add('sidebar-open');
+  }
 };
 
 leftSidebarClose.onclick = closeAllSidebars;
@@ -911,6 +947,12 @@ sidebarMask.onclick = closeAllSidebars;
 
 leftSidebar.onclick = e => e.stopPropagation();
 rightSidebar.onclick = e => e.stopPropagation();
+
+effectBtn.textContent = {
+  rain: '雨',
+  snow: '雪',
+  off: '无'
+}[effectMode];
 </script>
 </body>
 </html>
