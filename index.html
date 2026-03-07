@@ -11,15 +11,17 @@
             padding: 0;
             box-sizing: border-box;
         }
+
         html, body {
             width: 100%;
             min-height: 100vh;
             overflow-x: hidden;
         }
+
         body {
             background-color: #252525;
             color: #fff;
-            font-family: system-ui, sans-serif;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             padding-bottom: 60px;
         }
 
@@ -31,6 +33,7 @@
             background: radial-gradient(ellipse at center, #383838 0%, #252525 50%, #1a1a1a 100%);
             z-index: -2;
         }
+
         .light {
             position: fixed;
             width: 100%; height: 100%;
@@ -40,6 +43,7 @@
             z-index: -1;
             opacity: 0.5;
         }
+
         @keyframes lightMove {
             0% { transform: translate(0,0) scale(1); }
             50% { transform: translate(10px,-10px) scale(1.1); }
@@ -52,18 +56,21 @@
             position: relative;
             z-index: 2;
         }
+
         h1 {
             font-size: 32px;
             margin-bottom: 12px;
             color: #fff;
+            font-weight: 600;
         }
+
         .slogan {
             font-size: 17px;
             color: #ccc;
             margin-bottom: 28px;
         }
 
-        /* 搜索框 */
+        /* 搜索框 + 按钮 */
         .search-row {
             display: flex;
             gap: 10px;
@@ -71,6 +78,7 @@
             max-width: 420px;
             margin: 0 auto 22px;
         }
+
         .search-row input {
             flex: 1;
             padding: 14px 18px;
@@ -81,15 +89,28 @@
             background: rgba(255,255,255,0.08);
             color: #fff;
             backdrop-filter: blur(20px);
+            transition: all 0.3s ease;
         }
+
+        .search-row input:focus {
+            background: rgba(255,255,255,0.12);
+            border-color: rgba(100,181,246,0.3);
+        }
+
         .search-row button {
             padding: 14px 16px;
             border: 1px solid rgba(255,255,255,0.1);
             border-radius: 16px;
             background: rgba(255,255,255,0.08);
             color: #fff;
-            cursor: pointer;
+            font-size: 16px;
             backdrop-filter: blur(20px);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .search-row button:hover {
+            background: rgba(255,255,255,0.15);
         }
 
         /* 上滑提示 */
@@ -98,23 +119,30 @@
             font-size: 14px;
             color: #aaa;
             margin: 10px auto 36px;
-            animation: fadeUpDown 2s infinite alternate;
+            opacity: 0.8;
+            animation: fadeUpDown 2s infinite alternate ease-in-out;
         }
+
         @keyframes fadeUpDown {
             from { opacity: 0.5; transform: translateY(0); }
             to   { opacity: 1; transform: translateY(-6px); }
         }
 
-        /* ========== 3D 模型容器 ========== */
-        #model-container {
+        /* ========== GIF 展示区域 ========== */
+        .gif-area {
             width: 100%;
-            height: 300px;
+            max-width: 320px;
             margin: 0 auto 40px;
-            position: relative;
-            z-index: 1;
+            text-align: center;
         }
 
-        /* 列表 */
+        .gif-area img {
+            width: 100%;
+            height: auto;
+            border-radius: 12px;
+        }
+
+        /* 卡片列表 */
         .list {
             padding: 10px 22px;
             display: flex;
@@ -123,34 +151,41 @@
             position: relative;
             z-index: 2;
         }
+
         .item {
             background: rgba(255,255,255,0.07);
             border: 1px solid rgba(255,255,255,0.1);
             padding: 20px 22px;
             border-radius: 16px;
+            font-size: 16px;
             backdrop-filter: blur(20px);
             transition: all 0.5s ease;
             opacity: 0;
             transform: translateY(60px);
         }
+
         .item.show {
             opacity: 1;
             transform: translateY(0);
         }
+
         .item:hover {
             background: rgba(255,255,255,0.13);
+            border-color: rgba(100,181,246,0.2);
             transform: scale(1.02);
         }
+
         .item.left-long {
             width: 76%;
             align-self: flex-start;
         }
+
         .item.right-long {
             width: 76%;
             align-self: flex-end;
         }
 
-        /* 提示弹窗 */
+        /* 顶部提示消息 */
         .toast {
             position: fixed;
             top: 20px;
@@ -160,11 +195,14 @@
             color: #fff;
             padding: 12px 24px;
             border-radius: 12px;
+            font-size: 14px;
             z-index: 999;
             backdrop-filter: blur(10px);
             opacity: 0;
             transition: all 0.4s ease;
+            white-space: nowrap;
         }
+
         .toast.show {
             transform: translateX(-50%) translateY(0);
             opacity: 1;
@@ -189,8 +227,10 @@
 
     <div class="scroll-tip">↑ 向上滑动探索更多</div>
 
-    <!-- ========== 你的 OBJ 3D 模型显示在这里 ========== -->
-    <div id="model-container"></div>
+    <!-- ========== 这里放你的 GIF ========== -->
+    <div class="gif-area">
+        <img src="jh000gif.gif" alt="Planet Animation">
+    </div>
 </div>
 
 <div class="list">
@@ -216,26 +256,26 @@
     <div class="item right-long">选项 20</div>
 </div>
 
-<!-- 加载 Three.js 来渲染你的 OBJ 模型 -->
-<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/examples/js/loaders/OBJLoader.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/examples/js/controls/OrbitControls.js"></script>
-
 <script>
-    // 搜索功能
     const searchInput = document.getElementById('searchInput');
     const searchBtn = document.getElementById('searchBtn');
     const toast = document.getElementById('toast');
-    let toastTimer;
+    let toastTimer = null;
 
     function showToast() {
         toast.classList.add('show');
         clearTimeout(toastTimer);
-        toastTimer = setTimeout(() => toast.classList.remove('show'), 3000);
+        toastTimer = setTimeout(() => {
+            toast.classList.remove('show');
+        }, 3000);
     }
+
     function doSearch() {
-        if (searchInput.value.trim()) showToast();
+        const val = searchInput.value.trim();
+        if (!val) return;
+        showToast();
     }
+
     searchBtn.addEventListener('click', doSearch);
     searchInput.addEventListener('keydown', e => {
         if (e.key === 'Enter') doSearch();
@@ -244,64 +284,20 @@
     // 滑动逐个显示
     const items = document.querySelectorAll('.item');
     let current = 0;
+
     function showOneByOne() {
         if (current >= items.length) return;
-        const rect = items[current].getBoundingClientRect();
+        const el = items[current];
+        const rect = el.getBoundingClientRect();
         if (rect.top < window.innerHeight - 80) {
-            items[current].classList.add('show');
+            el.classList.add('show');
             current++;
             setTimeout(showOneByOne, 140);
         }
     }
+
     window.addEventListener('scroll', showOneByOne);
     showOneByOne();
-
-    // ========== 加载你的 OBJ 3D 模型 ==========
-    initModelViewer();
-
-    function initModelViewer() {
-        const container = document.getElementById('model-container');
-        const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(50, container.clientWidth / container.clientHeight, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-        renderer.setSize(container.clientWidth, container.clientHeight);
-        renderer.setClearColor(0x000000, 0);
-        container.appendChild(renderer.domElement);
-
-        // 灯光
-        const light1 = new THREE.DirectionalLight(0xffffff, 1.2);
-        light1.position.set(5, 3, 5);
-        scene.add(light1);
-        const light2 = new THREE.AmbientLight(0xffffff, 0.4);
-        scene.add(light2);
-
-        // 轨道控制：鼠标可旋转、缩放
-        const controls = new THREE.OrbitControls(camera, renderer.domElement);
-        controls.enableDamping = true;
-        controls.dampingFactor = 0.08;
-
-        // 加载 OBJ 模型
-        const loader = new THREE.OBJLoader();
-        loader.load(
-            'model.obj', 
-            (object) => {
-                object.scale.set(1, 1, 1); // 大小
-                object.position.set(0, -0.5, 0);
-                scene.add(object);
-            },
-            (xhr) => console.log((xhr.loaded / xhr.total * 100) + '% 已加载'),
-            (err) => console.error('加载失败:', err)
-        );
-
-        camera.position.z = 3;
-
-        function animate() {
-            requestAnimationFrame(animate);
-            controls.update();
-            renderer.render(scene, camera);
-        }
-        animate();
-    }
 </script>
 
 </body>
