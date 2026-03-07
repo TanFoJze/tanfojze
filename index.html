@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LamdaGames Tanfojze</title>
+    <!-- 网页图标（顶部标签页图标） -->
+    <link rel="icon" type="image/png" href="favpng.png">
     <style>
         * {
             margin: 0;
@@ -42,6 +44,7 @@
             background: rgba(255,255,255,0.85);
         }
 
+        /* ========== 你的 LOGO ========== */
         .logo {
             width: 32px;
             height: 32px;
@@ -151,7 +154,7 @@
             margin-bottom: 20px;
         }
 
-        /* ========== 修复：可横向滑动 + 居中吸附 ========== */
+        /* ========== 轮播：可滑动，但取消自动归正 ========== */
         .carousel {
             width: 100%;
             max-width: 420px;
@@ -160,10 +163,9 @@
             display: flex;
             align-items: center;
             gap: 12px;
-            padding: 0 calc(50% - 140px);
+            padding: 0 12px;
             overflow-x: auto;
             overflow-y: hidden;
-            scroll-snap-type: x mandatory;
             scroll-behavior: smooth;
             margin-bottom: 30px;
         }
@@ -178,7 +180,6 @@
             object-fit: cover;
             filter: brightness(0.5);
             transition: all 0.4s ease;
-            scroll-snap-align: center;
         }
         .carousel-item.active {
             height: 180px;
