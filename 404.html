@@ -1,57 +1,36 @@
+
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>404 - 页面不存在</title>
+<title>404</title>
 <style>
-    *{margin:0;padding:0;box-sizing:border-box}
-    body{
-        background:#121212;
-        color:#fff;
-        font-family:system-ui,sans-serif;
-        height:100vh;
-        display:flex;
-        flex-direction:column;
-        align-items:center;
-        justify-content:center;
-        text-align:center;
-        padding:0 24px;
-    }
-    .code{
-        font-size:80px;
-        font-weight:bold;
-        color:#ff4444;
-        margin-bottom:16px;
-    }
-    .text{
-        font-size:18px;
-        color:#ccc;
-        margin-bottom:8px;
-    }
-    .tip{
-        font-size:15px;
-        color:#888;
-        margin-bottom:30px;
-    }
-    .btn{
-        background:#333;
-        color:#fff;
-        padding:12px 24px;
-        border-radius:12px;
-        text-decoration:none;
-    }
-    .btn:hover{background:#444}
+/* 顶部红色吐司提示 */
+#toast {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #ff3b30;
+  color: #fff;
+  padding: 12px 24px;
+  border-radius: 12px;
+  font-size: 16px;
+  z-index: 9999;
+  opacity: 0.92;
+}
 </style>
-<!-- 4 秒后自动跳转 -->
-<meta http-equiv="refresh" content="4; url=https://tanfojze.github.io/tanfojze/">
+<!-- 立即跳转，0 秒等待 -->
+<meta http-equiv="refresh" content="0; url=https://tanfojze.github.io/tanfojze/">
 </head>
 <body>
-    <div class="code">404</div>
-    <div class="text">页面不存在或已被删除</div>
-    <div class="tip">4 秒后自动返回主页...</div>
-    <a class="btn" href="https://tanfojze.github.io/tanfojze/">立即返回</a>
+<!-- 红色顶部提示条 -->
+<div id="toast">页面不存在 404</div>
+
+<script>
+// 跳转前先把提示显示出来
+document.getElementById('toast').style.display = 'block';
+</script>
 </body>
 </html>
-
-
