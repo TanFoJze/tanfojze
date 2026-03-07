@@ -267,7 +267,7 @@
     </div>
     <div class="spacer"></div>
 
-    <div class="top-btn" id="musicBtn">♫</div>
+    <div class="top-btn" id="musicBtn">静</div>
     <div class="top-btn" id="effectBtn">无</div>
     <div class="top-btn" id="themeBtn">昼</div>
     <div class="top-btn" id="fullBtn">⛶</div>
@@ -444,7 +444,7 @@
     musicBtn.onclick = () => {
         if (playing) {
             bgm.pause();
-            musicBtn.textContent = '♪';
+            musicBtn.textContent = '停';
         } else {
             bgm.play();
             musicBtn.textContent = '♫';
