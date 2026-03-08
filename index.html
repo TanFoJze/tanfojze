@@ -7,12 +7,22 @@
 <body>
 
 <script>
-         fetch('widget/header.html')
-             .then(res => res.text())
-             .then(html => {
-                 document.body.insertAdjacentHTML('afterbegin', html);
-             });
-     </script>
+ document.write('<link rel="stylesheet" href="widget/header.html">');
+ fetch('widget/header.html')
+   .then(r => r.text())
+   .then(html => {
+     document.body.insertAdjacentHTML('afterbegin', html);
+     // 执行头部里的所有功能
+     setTimeout(() => {
+       const scripts = document.querySelectorAll('widget/header.html script');
+       scripts.forEach(s => {
+         const newScript = document.createElement('script');
+         newScript.textContent = s.textContent;
+         document.body.appendChild(newScript);
+       });
+     }, 20);
+   });
+ </script>
 
   这里写你的页面内容
 
