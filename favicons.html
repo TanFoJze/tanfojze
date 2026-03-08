@@ -1,0 +1,30 @@
+<script>
+// 所有页面的标签栏图标
+const faviconMap = {
+  
+  
+  home: 'favicons/home.png',
+  testic: 'favicons/favicon.png',
+  about: 'favicons/about.png',
+  news: 'favicons/news.png',
+  blog: 'favicons/blog.png',
+  404: 'favicons/404.png'
+
+
+}
+
+function setFavicon(name) {
+  const url = faviconMap[name]
+  if (!url) return
+
+  let link = document.querySelector("link[rel*='icon']")
+  if (!link) {
+    link = document.createElement('link')
+    link.rel = 'icon'
+    link.type = 'image/png'
+    document.head.appendChild(link)
+  }
+  link.href = url
+}
+</script>
+
