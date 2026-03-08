@@ -188,7 +188,6 @@
             background: rgba(0,0,0,0.1);
         }
 
-        /* ========== 顶部栏：更透明 + 强模糊 ========== */
         .top-bar {
             position: fixed;
             top: 0; left: 0; right: 0;
@@ -244,7 +243,29 @@
             font-size: 16px;
         }
 
-        /* ========== 底部栏：更矮 + 透明 + 强模糊 ========== */
+        .top-icon-btn {
+            width: 32px;
+            height: 32px;
+            display: grid;
+            place-items: center;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.08);
+            cursor: pointer;
+            margin-left: 6px;
+        }
+        body.light .top-icon-btn {
+            background: rgba(0,0,0,0.06);
+        }
+        .top-icon-btn svg {
+            width: 18px;
+            height: 18px;
+            stroke: currentColor;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            fill: none;
+        }
+
         .bottom-bar {
             position: fixed;
             bottom: 0;
@@ -434,6 +455,12 @@
         .desc-bar.expand {
             max-height: 500px;
         }
+        .desc-bar.hide {
+            opacity: 0;
+            visibility: hidden;
+            height: 0;
+            margin: 0;
+        }
         .desc-header {
             padding: 12px 16px;
             display: flex;
@@ -452,7 +479,6 @@
             color: #444;
         }
 
-        /* ========== 公告栏 ========== */
         .notice-bar {
             width: 100%;
             max-width: 420px;
@@ -496,7 +522,6 @@
             color: #444;
         }
 
-        /* ========== 分类按钮组：模型 / 应用源码 / 脚本 / 壁纸 / 模组 ========== */
         .cate-grid {
             width: 100%;
             max-width: 420px;
@@ -533,6 +558,62 @@
             color: #222;
         }
 
+        .float-panel {
+            position: fixed;
+            top: 60px;
+            right: 16px;
+            width: 280px;
+            background: rgba(20,20,20,0.95);
+            backdrop-filter: blur(16px);
+            border-radius: 16px;
+            padding: 16px;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+        body.light .float-panel {
+            background: rgba(255,255,255,0.95);
+        }
+        .float-panel.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        .float-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        .float-text {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #ccc;
+            margin-bottom: 10px;
+        }
+        body.light .float-text {
+            color: #444;
+        }
+        .float-cate {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+        }
+        .float-cate-item {
+            padding: 10px;
+            background: rgba(255,255,255,0.08);
+            border-radius: 10px;
+            text-align: center;
+            font-size: 12px;
+            cursor: pointer;
+        }
+        body.light .float-cate-item {
+            background: rgba(0,0,0,0.06);
+        }
+
         .mini-nav {
             width: 100%;
             max-width: 420px;
@@ -562,7 +643,6 @@
             color: #222;
         }
 
-        /* ========== 链接列表：自适应 2列 / 3列 ========== */
         .list {
             width: 100%;
             max-width: 460px;
@@ -598,7 +678,9 @@
         .item.show { opacity: 1; transform: translateY(0); }
 
         .carousel.hide,
-        .desc-bar.hide {
+        .desc-bar.hide,
+        .notice-bar.hide,
+        .cate-grid.hide {
             opacity: 0;
             visibility: hidden;
             height: 0;
@@ -621,6 +703,17 @@
             z-index: 9999;
         }
         .toast.show { opacity: 1; pointer-events: auto; }
+
+        @media (min-width: 768px), (orientation: landscape) {
+            .desc-bar,
+            .notice-bar,
+            .cate-grid {
+                display: none !important;
+            }
+            .top-extra-icons {
+                display: flex !important;
+            }
+        }
     </style>
 </head>
 
@@ -632,6 +725,36 @@
     <div class="time-close" id="timeClose">×</div>
     <div class="center-date" id="centerDate"></div>
     <div class="center-week" id="centerWeek"></div>
+</div>
+
+<div class="float-panel" id="descPanel">
+    <div class="float-title">网站介绍</div>
+    <div class="float-text">
+        本站是由 LamdaGames 开发的综合导航与工具集合平台，专注于提供简洁高效的使用体验。<br><br>
+        这里汇集了各类开发资源、项目展示、工具入口与个人作品，致力于为用户打造一站式服务中心。<br><br>
+        界面采用现代化设计，支持深色/浅色模式切换、动态雨雪特效、背景音乐与全屏体验，适配手机与电脑端。
+    </div>
+</div>
+
+<div class="float-panel" id="noticePanel">
+    <div class="float-title">网站公告</div>
+    <div class="float-text">
+        2026-03-08 网站全新改版上线<br>
+        新增：自适应布局、横竖屏自动刷新、分类导航<br>
+        优化：界面更通透、动画更流畅、交互更舒适<br>
+        如有问题请在反馈建议中提交！
+    </div>
+</div>
+
+<div class="float-panel" id="catePanel">
+    <div class="float-title">资源分类</div>
+    <div class="float-cate">
+        <div class="float-cate-item">模型</div>
+        <div class="float-cate-item">应用源码</div>
+        <div class="float-cate-item">脚本</div>
+        <div class="float-cate-item">壁纸库</div>
+        <div class="float-cate-item">模组库</div>
+    </div>
 </div>
 
 <div class="left-sidebar" id="leftSidebar">
@@ -666,6 +789,19 @@
         <div class="dev-tag">开发人员</div>
     </div>
     <div class="spacer"></div>
+
+    <div class="top-extra-icons" style="display: none; align-items: center;">
+        <div class="top-icon-btn" id="topDescBtn" title="网站介绍">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+        </div>
+        <div class="top-icon-btn" id="topNoticeBtn" title="网站公告">
+            <svg viewBox="0 0 24 24"><polyline points="11 5 6 9 2 5"></polyline><path d="M22 12v7a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5"></path></svg>
+        </div>
+        <div class="top-icon-btn" id="topCateBtn" title="资源分类">
+            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+        </div>
+    </div>
+
     <div class="top-btn" id="musicBtn">静</div>
     <div class="top-btn" id="effectBtn">无</div>
     <div class="top-btn" id="themeBtn">昼</div>
@@ -673,7 +809,6 @@
     <div class="top-btn menu-toggle" id="menuBtn">☰</div>
 </div>
 
-<!-- ========== 底部 4 个 SVG 图标 ========== -->
 <div class="bottom-bar">
     <div class="bottom-item" id="navGet">
         <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
@@ -731,7 +866,6 @@
         </div>
     </div>
 
-    <!-- ========== 公告栏 ========== -->
     <div class="notice-bar" id="noticeBar">
         <div class="notice-header" id="noticeHeader">
             <span>网站公告</span>
@@ -745,7 +879,6 @@
         </div>
     </div>
 
-    <!-- ========== 分类按钮 ========== -->
     <div class="cate-grid" id="cateGrid">
         <div class="cate-btn">模型</div>
         <div class="cate-btn">应用源码</div>
@@ -761,7 +894,6 @@
         <div class="mini-nav-item">简介</div>
     </div>
 
-    <!-- ========== 13个 + 新增按钮（两列/三列自适应） ========== -->
     <div class="list" id="list">
         <div class="item" onclick="window.open('https://gatehumex.com','_blank')">Gatehumex</div>
         <div class="item" onclick="window.open('https://tranzelo-eternal.com','_blank')">Tranzelo-Eternal</div>
@@ -777,7 +909,6 @@
         <div class="item" onclick="window.open('https://contact-me.com','_blank')">我的联系方式</div>
         <div class="item" onclick="window.open('https://tools.tanfojze.com','_blank')">网站小工具</div>
 
-        <!-- 我帮你新增的一批按钮 -->
         <div class="item" onclick="showToast('AI模型中心')">AI模型中心</div>
         <div class="item" onclick="showToast('安卓源码')">安卓源码</div>
         <div class="item" onclick="showToast('自动化脚本')">自动化脚本</div>
@@ -790,9 +921,7 @@
 <audio id="bgm" loop preload="auto">
     <source src="bgm.mp3" type="audio/mpeg">
 
-
 <script>
-// ========== 横竖屏切换自动刷新 ==========
 let lastOrientation = window.innerWidth > window.innerHeight;
 window.addEventListener('resize', () => {
     const nowLandscape = window.innerWidth > window.innerHeight;
@@ -803,24 +932,14 @@ window.addEventListener('resize', () => {
 });
 
 const Storage = {
-  set(key, val) {
-    localStorage.setItem(key, JSON.stringify(val));
-  },
+  set(key, val) { localStorage.setItem(key, JSON.stringify(val)); },
   get(key, def = null) {
-    try {
-      const item = localStorage.getItem(key);
-      return item ? JSON.parse(item) : def;
-    } catch (e) {
-      return def;
-    }
+    try { const item = localStorage.getItem(key); return item ? JSON.parse(item) : def; }
+    catch (e) { return def; }
   }
 };
 
-const savedConfig = Storage.get('appConfig', {
-  theme: 'dark',
-  music: true,
-  effect: 'off'
-});
+const savedConfig = Storage.get('appConfig', { theme: 'dark', music: true, effect: 'off' });
 
 const canvas = document.getElementById('particleCanvas');
 const ctx = canvas.getContext('2d');
@@ -829,105 +948,62 @@ const effectBtn = document.getElementById('effectBtn');
 let particles = [];
 let animating = true;
 
-function resizeCanvas() {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-}
+function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
 resizeCanvas();
 window.addEventListener('resize', resizeCanvas);
 
 function createParticles() {
   particles = [];
-  let count = 0;
-  if (effectMode === 'rain') count = 200;
-  if (effectMode === 'snow') count = 150;
+  let count = effectMode === 'rain' ? 200 : effectMode === 'snow' ? 150 : 0;
   for (let i = 0; i < count; i++) {
-    particles.push({
-      x: Math.random() * canvas.width,
-      y: Math.random() * canvas.height,
-      s: Math.random() + 0.5
-    });
+    particles.push({ x: Math.random() * canvas.width, y: Math.random() * canvas.height, s: Math.random() + 0.5 });
   }
 }
 
 function draw() {
   if (!animating) return;
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  if (effectMode !== 'off') {
-    if (effectMode === 'rain') {
-      ctx.fillStyle = 'rgba(255,255,255,0.55)';
-      particles.forEach(p => {
-        ctx.fillRect(p.x, p.y, 1.2, 10 + p.s * 4);
-        p.y += 10 + p.s * 4;
-        if (p.y > canvas.height) p.y = -30;
-      });
-    } else {
-      ctx.fillStyle = 'rgba(255,255,255,0.8)';
-      particles.forEach(p => {
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, 1.8 + p.s, 0, Math.PI * 2);
-        ctx.fill();
-        p.y += 2 + p.s;
-        p.x += Math.sin(p.y * 0.03) * 0.6;
-        if (p.y > canvas.height) {
-          p.y = -10;
-          p.x = Math.random() * canvas.width;
-        }
-      });
-    }
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  if (effectMode === 'rain') {
+    ctx.fillStyle = 'rgba(255,255,255,0.55)';
+    particles.forEach(p => { ctx.fillRect(p.x,p.y,1.2,10+p.s*4); p.y += 10+p.s*4; if (p.y>canvas.height) p.y=-30; });
+  } else if (effectMode === 'snow') {
+    ctx.fillStyle = 'rgba(255,255,255,0.8)';
+    particles.forEach(p => {
+      ctx.beginPath(); ctx.arc(p.x,p.y,1.8+p.s,0,Math.PI*2); ctx.fill();
+      p.y += 2+p.s; p.x += Math.sin(p.y*0.03)*0.6;
+      if (p.y>canvas.height) { p.y=-10; p.x=Math.random()*canvas.width; }
+    });
   }
   requestAnimationFrame(draw);
-}
-
-function startAnim() {
-  if (!animating) {
-    animating = true;
-    draw();
-  }
 }
 createParticles();
 draw();
 
 effectBtn.onclick = () => {
-  if (effectMode === 'rain') {
-    effectMode = 'snow';
-    effectBtn.textContent = '雪';
-  } else if (effectMode === 'snow') {
-    effectMode = 'off';
-    effectBtn.textContent = '无';
-  } else {
-    effectMode = 'rain';
-    effectBtn.textContent = '雨';
-  }
+  if (effectMode === 'rain') { effectMode = 'snow'; effectBtn.textContent = '雪'; }
+  else if (effectMode === 'snow') { effectMode = 'off'; effectBtn.textContent = '无'; }
+  else { effectMode = 'rain'; effectBtn.textContent = '雨'; }
   savedConfig.effect = effectMode;
   Storage.set('appConfig', savedConfig);
   createParticles();
-  startAnim();
+  animating = true;
+  draw();
 };
 
 const toast = document.getElementById('toast');
 function showToast(msg) {
   toast.textContent = msg;
   toast.classList.add('show');
-  setTimeout(() => toast.classList.remove('show'), 2000);
+  setTimeout(()=>toast.classList.remove('show'),2000);
 }
 
-const searchInput = document.getElementById('searchInput');
 const searchBtn = document.getElementById('searchBtn');
-searchBtn.onclick = () => {
-  showToast('该内容不存在');
-};
+searchBtn.onclick = () => showToast('该内容不存在');
 
 const themeBtn = document.getElementById('themeBtn');
 const body = document.body;
-
-if (savedConfig.theme === 'light') {
-  body.classList.add('light');
-  themeBtn.textContent = '夜';
-} else {
-  themeBtn.textContent = '昼';
-}
-
+if (savedConfig.theme === 'light') { body.classList.add('light'); themeBtn.textContent = '夜'; }
+else { themeBtn.textContent = '昼'; }
 themeBtn.onclick = () => {
   body.classList.toggle('light');
   const isLight = body.classList.contains('light');
@@ -938,34 +1014,20 @@ themeBtn.onclick = () => {
 
 const fullBtn = document.getElementById('fullBtn');
 fullBtn.onclick = () => {
-  if (!document.fullscreenElement) {
-    document.documentElement.requestFullscreen();
-  } else {
-    document.exitFullscreen();
-  }
+  if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+  else document.exitFullscreen();
 };
 
 const bgm = document.getElementById('bgm');
 const musicBtn = document.getElementById('musicBtn');
 let playing = savedConfig.music;
-
-window.addEventListener('load', () => {
-  if (playing) {
-    bgm.play().catch(() => {});
-    musicBtn.textContent = '♫';
-  } else {
-    musicBtn.textContent = '静';
-  }
+window.addEventListener('load',()=>{
+  if (playing) { bgm.play().catch(()=>{}); musicBtn.textContent = '♫'; }
+  else musicBtn.textContent = '静';
 });
-
 musicBtn.onclick = () => {
-  if (playing) {
-    bgm.pause();
-    musicBtn.textContent = '静';
-  } else {
-    bgm.play().catch(() => {});
-    musicBtn.textContent = '♫';
-  }
+  if (playing) { bgm.pause(); musicBtn.textContent = '静'; }
+  else { bgm.play().catch(()=>{}); musicBtn.textContent = '♫'; }
   playing = !playing;
   savedConfig.music = playing;
   Storage.set('appConfig', savedConfig);
@@ -975,51 +1037,58 @@ const carousel = document.getElementById('carousel');
 function updateActive() {
   const items = document.querySelectorAll('.carousel-item');
   const rect = carousel.getBoundingClientRect();
-  const center = rect.left + rect.width / 2;
-  items.forEach(el => {
+  const center = rect.left + rect.width/2;
+  items.forEach(el=>{
     const r = el.getBoundingClientRect();
-    const c = r.left + r.width / 2;
-    if (Math.abs(c - center) < r.width / 1.5) {
-      el.classList.add('active');
-    } else {
-      el.classList.remove('active');
-    }
+    const c = r.left + r.width/2;
+    if (Math.abs(c-center) < r.width/1.5) el.classList.add('active');
+    else el.classList.remove('active');
   });
 }
-carousel.addEventListener('scroll', updateActive);
+carousel.addEventListener('scroll',updateActive);
 updateActive();
 
 const descBar = document.getElementById('descBar');
 const descHeader = document.getElementById('descHeader');
-descHeader.onclick = () => {
-  descBar.classList.toggle('expand');
-};
+descHeader.onclick = () => descBar.classList.toggle('expand');
 
-// 公告栏展开
 const noticeBar = document.getElementById('noticeBar');
 const noticeHeader = document.getElementById('noticeHeader');
-noticeHeader.onclick = () => {
-  noticeBar.classList.toggle('expand');
-};
+noticeHeader.onclick = () => noticeBar.classList.toggle('expand');
+
+const descPanel = document.getElementById('descPanel');
+const noticePanel = document.getElementById('noticePanel');
+const catePanel = document.getElementById('catePanel');
+
+const topDescBtn = document.getElementById('topDescBtn');
+const topNoticeBtn = document.getElementById('topNoticeBtn');
+const topCateBtn = document.getElementById('topCateBtn');
+
+function closeAllFloat() {
+  descPanel.classList.remove('show');
+  noticePanel.classList.remove('show');
+  catePanel.classList.remove('show');
+}
+
+topDescBtn.onclick = (e)=>{ e.stopPropagation(); closeAllFloat(); descPanel.classList.toggle('show'); };
+topNoticeBtn.onclick = (e)=>{ e.stopPropagation(); closeAllFloat(); noticePanel.classList.toggle('show'); };
+topCateBtn.onclick = (e)=>{ e.stopPropagation(); closeAllFloat(); catePanel.classList.toggle('show'); };
+
+window.onclick = closeAllFloat;
+descPanel.onclick = e=>e.stopPropagation();
+noticePanel.onclick = e=>e.stopPropagation();
+catePanel.onclick = e=>e.stopPropagation();
 
 const list = document.getElementById('list');
 const miniNav = document.querySelector('.mini-nav');
 const cateGrid = document.getElementById('cateGrid');
 let cur = 0;
 const items = document.querySelectorAll('.item');
-function showItems() {
-  if (cur >= items.length) return;
-  items[cur].classList.add('show');
-  cur++;
-  setTimeout(showItems, 120);
-}
-function resetItems() {
-  items.forEach(i => i.classList.remove('show'));
-  cur = 0;
-}
+function showItems() { if (cur>=items.length) return; items[cur].classList.add('show'); cur++; setTimeout(showItems,120); }
+function resetItems() { items.forEach(i=>i.classList.remove('show')); cur=0; }
 
-window.addEventListener('scroll', () => {
-  if (window.scrollY > 100) {
+window.addEventListener('scroll',()=>{
+  if (window.scrollY>100) {
     carousel.classList.add('hide');
     descBar.classList.add('hide');
     noticeBar.classList.add('hide');
@@ -1043,54 +1112,34 @@ const menuBtn = document.getElementById('menuBtn');
 const siteTitleBtn = document.getElementById('siteTitleBtn');
 const leftSidebar = document.getElementById('leftSidebar');
 const rightSidebar = document.getElementById('rightSidebar');
-const leftSidebarClose = document.getElementById('leftSidebarClose');
-const rightSidebarClose = document.getElementById('rightSidebarClose');
 const sidebarMask = document.getElementById('sidebarMask');
 const centerTimeBox = document.getElementById('centerTimeBox');
 const timeClose = document.getElementById('timeClose');
 const centerDate = document.getElementById('centerDate');
 const centerWeek = document.getElementById('centerWeek');
 
-siteTitleBtn.onclick = () => {
-  window.open('https://lamdagames2024.github.io/home000/', '_blank');
-};
+siteTitleBtn.onclick = () => window.open('https://lamdagames2024.github.io/home000/','_blank');
 
 let longPressTimer;
-logoBtn.addEventListener('mousedown', () => {
-  longPressTimer = setTimeout(() => {
-    updateTimeBox();
-    centerTimeBox.classList.add('show');
-  }, 500);
-});
-logoBtn.addEventListener('mouseup', () => clearTimeout(longPressTimer));
-logoBtn.addEventListener('mouseleave', () => clearTimeout(longPressTimer));
-logoBtn.addEventListener('touchstart', () => {
-  longPressTimer = setTimeout(() => {
-    updateTimeBox();
-    centerTimeBox.classList.add('show');
-  }, 500);
-});
-logoBtn.addEventListener('touchend', () => clearTimeout(longPressTimer));
+logoBtn.addEventListener('mousedown',()=>{ longPressTimer=setTimeout(()=>{ updateTimeBox(); centerTimeBox.classList.add('show'); },500); });
+logoBtn.addEventListener('mouseup',()=>clearTimeout(longPressTimer));
+logoBtn.addEventListener('mouseleave',()=>clearTimeout(longPressTimer));
+logoBtn.addEventListener('touchstart',()=>{ longPressTimer=setTimeout(()=>{ updateTimeBox(); centerTimeBox.classList.add('show'); },500); });
+logoBtn.addEventListener('touchend',()=>clearTimeout(longPressTimer));
 
 function updateTimeBox() {
   const now = new Date();
   const y = now.getFullYear();
-  const m = now.getMonth() + 1;
+  const m = now.getMonth()+1;
   const d = now.getDate();
   const wd = now.getDay();
-  const weekArr = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
-  centerDate.textContent = y + '年' + m + '月' + d + '日';
-  centerWeek.textContent = weekArr[wd];
+  const week = ['星期日','星期一','星期二','星期三','星期四','星期五','星期六'];
+  centerDate.textContent = `${y}年${m}月${d}日`;
+  centerWeek.textContent = week[wd];
 }
-
-timeClose.onclick = () => {
-  centerTimeBox.classList.remove('show');
-};
-
-centerTimeBox.onclick = (e) => e.stopPropagation();
-window.onclick = () => {
-  centerTimeBox.classList.remove('show');
-};
+timeClose.onclick = () => centerTimeBox.classList.remove('show');
+centerTimeBox.onclick = e=>e.stopPropagation();
+window.onclick = () => centerTimeBox.classList.remove('show');
 
 function closeAllSidebars() {
   leftSidebar.classList.remove('show');
@@ -1100,37 +1149,23 @@ function closeAllSidebars() {
 }
 
 logoBtn.onclick = () => {
-  const isOpen = leftSidebar.classList.contains('show');
+  const is = leftSidebar.classList.contains('show');
   closeAllSidebars();
-  if (!isOpen) {
-    leftSidebar.classList.add('show');
-    sidebarMask.classList.add('show');
-    body.classList.add('sidebar-open');
-  }
+  if (!is) { leftSidebar.classList.add('show'); sidebarMask.classList.add('show'); body.classList.add('sidebar-open'); }
 };
-
 menuBtn.onclick = () => {
-  const isOpen = rightSidebar.classList.contains('show');
+  const is = rightSidebar.classList.contains('show');
   closeAllSidebars();
-  if (!isOpen) {
-    rightSidebar.classList.add('show');
-    sidebarMask.classList.add('show');
-    body.classList.add('sidebar-open');
-  }
+  if (!is) { rightSidebar.classList.add('show'); sidebarMask.classList.add('show'); body.classList.add('sidebar-open'); }
 };
 
-leftSidebarClose.onclick = closeAllSidebars;
-rightSidebarClose.onclick = closeAllSidebars;
+document.getElementById('leftSidebarClose').onclick = closeAllSidebars;
+document.getElementById('rightSidebarClose').onclick = closeAllSidebars;
 sidebarMask.onclick = closeAllSidebars;
+leftSidebar.onclick = e=>e.stopPropagation();
+rightSidebar.onclick = e=>e.stopPropagation();
 
-leftSidebar.onclick = e => e.stopPropagation();
-rightSidebar.onclick = e => e.stopPropagation();
-
-effectBtn.textContent = {
-  rain: '雨',
-  snow: '雪',
-  off: '无'
-}[effectMode];
+effectBtn.textContent = { rain:'雨', snow:'雪', off:'无' }[effectMode];
 </script>
 </body>
 </html>
