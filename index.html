@@ -6,6 +6,14 @@
 </head>
 <body>
 
+<script>
+         fetch('widget/header.html')
+             .then(res => res.text())
+             .then(html => {
+                 document.body.insertAdjacentHTML('afterbegin', html);
+             });
+     </script>
+
   这里写你的页面内容
 
 </body>
