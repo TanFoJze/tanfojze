@@ -23,7 +23,7 @@
             font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             transition: background 0.3s;
             position: relative;
-            padding-left: 54px; /* 给左侧导航留位置 */
+            padding-left: 54px;
         }
         body.light {
             background: #f6f6f6;
@@ -188,7 +188,6 @@
             background: rgba(0,0,0,0.1);
         }
 
-        /* 顶部栏 */
         .top-bar {
             position: fixed;
             top: 0; left: 54px; right: 0;
@@ -267,7 +266,6 @@
             fill: none;
         }
 
-        /* ========== 左侧竖屏导航栏 ========== */
         .side-nav {
             position: fixed;
             left: 0;
@@ -320,7 +318,6 @@
             fill: none;
         }
 
-        /* 手机竖屏 → 隐藏左侧导航，显示底部 */
         @media (max-width: 767px) and (orientation: portrait) {
             body { padding-left: 0; padding-bottom: 50px; }
             .top-bar { left: 0; }
@@ -366,7 +363,6 @@
             }
         }
 
-        /* 横屏 / 电脑 → 显示左侧竖栏，隐藏底部 */
         @media (min-width: 768px), (orientation: landscape) {
             .bottom-bar { display: none !important; }
             .side-nav { display: flex !important; }
@@ -748,7 +744,6 @@
     <div class="sidebar-item">反馈建议</div>
 </div>
 
-<!-- 顶部栏 -->
 <div class="top-bar">
     <div class="logo" id="logoBtn">
         <img src="favicons/favicon.png" alt="Logo">
@@ -778,7 +773,6 @@
     <div class="top-btn" id="menuBtn">☰</div>
 </div>
 
-<!-- 左侧竖屏导航（电脑/横屏显示） -->
 <div class="side-nav">
     <div class="side-item" id="navGet">
         <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
@@ -798,7 +792,6 @@
     </div>
 </div>
 
-<!-- 底部导航（手机竖屏显示） -->
 <div class="bottom-bar" style="display:none;">
     <div class="bottom-item" id="navGet">
         <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
@@ -1116,6 +1109,7 @@ const rightSidebar = document.getElementById('rightSidebar');
 const sidebarMask = document.getElementById('sidebarMask');
 const centerTimeBox = document.getElementById('centerTimeBox');
 const timeClose = document.getElementById('timeClose');
+const siteTitleBtn = document.getElementById('siteTitleBtn');
 
 function closeSidebars() {
     leftSidebar.classList.remove('show');
@@ -1132,4 +1126,48 @@ logoBtn.onclick = () => {
 menuBtn.onclick = () => {
     const s = rightSidebar.classList.contains('show');
     closeSidebars();
-    if (!s) { rightSidebar.classList.add('show'); sidebarMask.classList.add('show'); body.classList
+    if (!s) { rightSidebar.classList.add('show'); sidebarMask.classList.add('show'); body.classList.add('sidebar-open'); }
+};
+
+document.getElementById('leftSidebarClose').onclick = closeSidebars;
+document.getElementById('rightSidebarClose').onclick = closeSidebars;
+sidebarMask.onclick = closeSidebars;
+leftSidebar.onclick = e=>e.stopPropagation();
+rightSidebar.onclick = e=>e.stopPropagation();
+
+// 时间弹窗
+let longPressTimer;
+logoBtn.addEventListener('mousedown',()=>{ longPressTimer=setTimeout(()=>{ updateTimeBox(); centerTimeBox.classList.add('show'); },500); });
+logoBtn.addEventListener('mouseup',()=>clearTimeout(longPressTimer));
+logoBtn.addEventListener('mouseleave',()=>clearTimeout(longPressTimer));
+logoBtn.addEventListener('touchstart',()=>{ longPressTimer=setTimeout(()=>{ updateTimeBox(); centerTimeBox.classList.add('show'); },500); });
+logoBtn.addEventListener('touchend',()=>clearTimeout(longPressTimer));
+
+function updateTimeBox() {
+    const now = new Date();
+    const y = now.getFullYear();
+    const m = now.getMonth()+1;
+    const d = now.getDate();
+    const wd = now.getDay();
+    const week = ['星期日','星期一','星期二','星期三','星期四','星期五','星期六'];
+    document.getElementById('centerDate').textContent = `${y}年${m}月${d}日`;
+    document.getElementById('centerWeek').textContent = week[wd];
+}
+timeClose.onclick = () => centerTimeBox.classList.remove('show');
+centerTimeBox.onclick = e=>e.stopPropagation();
+window.onclick = () => centerTimeBox.classList.remove('show');
+
+// 标题跳转
+siteTitleBtn.onclick = () => window.open('https://lamdagames2024.github.io/home000/','_blank');
+
+// Toast
+const toast = document.getElementById('toast');
+function showToast(msg) {
+    toast.textContent = msg;
+    toast.classList.add('show');
+    setTimeout(()=>toast.classList.remove('show'),2000);
+}
+document.getElementById('searchBtn').onclick = () => showToast('该内容不存在');
+</script>
+</body>
+</html>
