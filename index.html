@@ -188,19 +188,21 @@
             background: rgba(0,0,0,0.1);
         }
 
+        /* ========== 顶部栏：更透明 + 强模糊 ========== */
         .top-bar {
             position: fixed;
             top: 0; left: 0; right: 0;
             height: 54px;
-            background: rgba(0, 0, 0, 0.9);
-            backdrop-filter: blur(12px);
+            background: rgba(0, 0, 0, 0.35);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             display: flex; align-items: center;
             padding: 0 16px;
             z-index: 999;
             transition: background 0.3s;
         }
         body.light .top-bar {
-            background: rgba(255,255,255,0.85);
+            background: rgba(255,255,255,0.35);
         }
 
         .logo {
@@ -242,14 +244,16 @@
             font-size: 16px;
         }
 
+        /* ========== 底部栏：更矮 + 透明 + 强模糊 ========== */
         .bottom-bar {
             position: fixed;
             bottom: 0;
             left: 0;
             right: 0;
-            height: 60px;
-            background: rgba(0, 0, 0, 0.92);
-            backdrop-filter: blur(16px);
+            height: 50px;
+            background: rgba(0, 0, 0, 0.35);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             display: flex;
             align-items: center;
             justify-content: space-around;
@@ -258,19 +262,22 @@
             transition: background 0.3s;
         }
         body.light .bottom-bar {
-            background: rgba(255,255,255,0.85);
+            background: rgba(255,255,255,0.35);
         }
         .bottom-item {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            font-size: 14px;
+            font-size: 11px;
             font-weight: 500;
             color: #fff;
             cursor: pointer;
             opacity: 0.8;
             transition: opacity 0.2s;
+            padding-top: 4px;
+            padding-bottom: 4px;
+            gap: 4px;
         }
         body.light .bottom-item {
             color: #222;
@@ -278,6 +285,15 @@
         .bottom-item.active,
         .bottom-item:hover {
             opacity: 1;
+        }
+        .bottom-item svg {
+            width: 20px;
+            height: 20px;
+            stroke: currentColor;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            fill: none;
         }
 
         .header {
@@ -436,6 +452,87 @@
             color: #444;
         }
 
+        /* ========== 公告栏 ========== */
+        .notice-bar {
+            width: 100%;
+            max-width: 420px;
+            margin-bottom: 16px;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.05);
+            overflow: hidden;
+            transition: max-height 0.4s ease, opacity 0.3s, visibility 0.3s, height 0.3s, margin 0.3s;
+            max-height: 60px;
+            opacity: 1;
+            visibility: visible;
+            height: auto;
+        }
+        body.light .notice-bar {
+            background: rgba(0,0,0,0.05);
+        }
+        .notice-bar.expand {
+            max-height: 500px;
+        }
+        .notice-bar.hide {
+            opacity: 0;
+            visibility: hidden;
+            height: 0;
+            margin: 0;
+        }
+        .notice-header {
+            padding: 12px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        .notice-content {
+            padding: 0 16px 16px;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #ccc;
+        }
+        body.light .notice-content {
+            color: #444;
+        }
+
+        /* ========== 分类按钮组：模型 / 应用源码 / 脚本 / 壁纸 / 模组 ========== */
+        .cate-grid {
+            width: 100%;
+            max-width: 420px;
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+            transition: opacity 0.3s, visibility 0.3s, height 0.3s, margin 0.3s;
+            opacity: 1;
+            visibility: visible;
+        }
+        .cate-grid.hide {
+            opacity: 0;
+            visibility: hidden;
+            height: 0;
+            margin: 0;
+        }
+        .cate-grid::-webkit-scrollbar { height: 0; }
+        .cate-btn {
+            flex: 1;
+            min-width: 70px;
+            padding: 10px 6px;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.1);
+            text-align: center;
+            font-size: 12px;
+            color: #fff;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        body.light .cate-btn {
+            background: #fff;
+            color: #222;
+        }
+
         .mini-nav {
             width: 100%;
             max-width: 420px;
@@ -465,26 +562,40 @@
             color: #222;
         }
 
+        /* ========== 链接列表：自适应 2列 / 3列 ========== */
         .list {
-            padding: 10px 20px 60px;
-            display: flex; flex-direction: column; gap: 10px;
-            opacity: 0; visibility: hidden;
+            width: 100%;
+            max-width: 460px;
+            padding: 10px 10px 60px;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            opacity: 0;
+            visibility: hidden;
             transition: opacity 0.6s;
+        }
+        @media (min-width: 480px) {
+            .list {
+                grid-template-columns: repeat(3, 1fr);
+            }
         }
         .list.show {
             opacity: 1; visibility: visible;
         }
         .item {
-            padding: 18px; border-radius: 16px;
+            padding: 18px;
+            border-radius: 16px;
             background: rgba(255,255,255,0.1);
-            opacity: 0; transform: translateY(30px);
+            opacity: 0;
+            transform: translateY(30px);
             transition: all 0.5s ease;
             cursor: pointer;
+            text-align: center;
+            display: grid;
+            place-items: center;
         }
         body.light .item { background: #fff; }
         .item.show { opacity: 1; transform: translateY(0); }
-        .item.left { width: 85%; align-self: flex-start; }
-        .item.right { width: 85%; align-self: flex-end; }
 
         .carousel.hide,
         .desc-bar.hide {
@@ -562,11 +673,24 @@
     <div class="top-btn menu-toggle" id="menuBtn">☰</div>
 </div>
 
+<!-- ========== 底部 4 个 SVG 图标 ========== -->
 <div class="bottom-bar">
-    <div class="bottom-item">获取</div>
-    <div class="bottom-item">开源</div>
-    <div class="bottom-item">探索</div>
-    <div class="bottom-item">本地</div>
+    <div class="bottom-item" id="navGet">
+        <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+        <span>获取</span>
+    </div>
+    <div class="bottom-item" id="navOpen">
+        <svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+        <span>开源</span>
+    </div>
+    <div class="bottom-item" id="navExplore">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+        <span>探索</span>
+    </div>
+    <div class="bottom-item" id="navLocal">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="8" y1="12" x2="16" y2="12"></line></svg>
+        <span>本地</span>
+    </div>
 </div>
 
 <div class="toast" id="toast">该内容不存在</div>
@@ -607,6 +731,29 @@
         </div>
     </div>
 
+    <!-- ========== 公告栏 ========== -->
+    <div class="notice-bar" id="noticeBar">
+        <div class="notice-header" id="noticeHeader">
+            <span>网站公告</span>
+            <span>▼</span>
+        </div>
+        <div class="notice-content">
+            2026-03-08 网站全新改版上线<br>
+            新增：自适应布局、横竖屏自动刷新、分类导航<br>
+            优化：界面更通透、动画更流畅、交互更舒适<br>
+            如有问题请在反馈建议中提交！
+        </div>
+    </div>
+
+    <!-- ========== 分类按钮 ========== -->
+    <div class="cate-grid" id="cateGrid">
+        <div class="cate-btn">模型</div>
+        <div class="cate-btn">应用源码</div>
+        <div class="cate-btn">脚本</div>
+        <div class="cate-btn">壁纸库</div>
+        <div class="cate-btn">模组库</div>
+    </div>
+
     <div class="mini-nav">
         <div class="mini-nav-item">主页</div>
         <div class="mini-nav-item">资源</div>
@@ -614,20 +761,29 @@
         <div class="mini-nav-item">简介</div>
     </div>
 
+    <!-- ========== 13个 + 新增按钮（两列/三列自适应） ========== -->
     <div class="list" id="list">
-        <div class="item left" onclick="window.open('https://gatehumex.com','_blank')">Gatehumex</div>
-        <div class="item right" onclick="window.open('https://tranzelo-eternal.com','_blank')">Tranzelo-Eternal</div>
-        <div class="item left" onclick="window.open('https://tranzelo-endless.com','_blank')">Tranzelo-Endless</div>
-        <div class="item right" onclick="window.open('https://tranzello-immortal.com','_blank')">Tranzello-Immortal</div>
-        <div class="item left" onclick="window.open('https://fishbone-engine.com','_blank')">Fishbone Engine</div>
-        <div class="item right" onclick="window.open('https://github.com/tanfo','_blank')">TanFo's Github</div>
-        <div class="item left" onclick="window.open('https://operator-api.com','_blank')">Operator API</div>
-        <div class="item right" onclick="window.open('https://tfj-pan.com','_blank')">TFJ云盘下载服务</div>
-        <div class="item left" onclick="window.open('https://my-collection.com','_blank')">收藏网站集合</div>
-        <div class="item right" onclick="window.open('https://resource-box.com','_blank')">资源box</div>
-        <div class="item left" onclick="window.open('https://tanfojze-dev.com','_blank')">Tanfojze开发者服务 移动端下载</div>
-        <div class="item right" onclick="window.open('https://contact-me.com','_blank')">我的联系方式</div>
-        <div class="item left" onclick="window.open('https://tools.tanfojze.com','_blank')">网站小工具</div>
+        <div class="item" onclick="window.open('https://gatehumex.com','_blank')">Gatehumex</div>
+        <div class="item" onclick="window.open('https://tranzelo-eternal.com','_blank')">Tranzelo-Eternal</div>
+        <div class="item" onclick="window.open('https://tranzelo-endless.com','_blank')">Tranzelo-Endless</div>
+        <div class="item" onclick="window.open('https://tranzello-immortal.com','_blank')">Tranzello-Immortal</div>
+        <div class="item" onclick="window.open('https://fishbone-engine.com','_blank')">Fishbone Engine</div>
+        <div class="item" onclick="window.open('https://github.com/tanfo','_blank')">TanFo's Github</div>
+        <div class="item" onclick="window.open('https://operator-api.com','_blank')">Operator API</div>
+        <div class="item" onclick="window.open('https://tfj-pan.com','_blank')">TFJ云盘下载服务</div>
+        <div class="item" onclick="window.open('https://my-collection.com','_blank')">收藏网站集合</div>
+        <div class="item" onclick="window.open('https://resource-box.com','_blank')">资源box</div>
+        <div class="item" onclick="window.open('https://tanfojze-dev.com','_blank')">Tanfojze开发者服务</div>
+        <div class="item" onclick="window.open('https://contact-me.com','_blank')">我的联系方式</div>
+        <div class="item" onclick="window.open('https://tools.tanfojze.com','_blank')">网站小工具</div>
+
+        <!-- 我帮你新增的一批按钮 -->
+        <div class="item" onclick="showToast('AI模型中心')">AI模型中心</div>
+        <div class="item" onclick="showToast('安卓源码')">安卓源码</div>
+        <div class="item" onclick="showToast('自动化脚本')">自动化脚本</div>
+        <div class="item" onclick="showToast('4K壁纸')">4K壁纸</div>
+        <div class="item" onclick="showToast('游戏模组')">游戏模组</div>
+        <div class="item" onclick="showToast('实用插件')">实用插件</div>
     </div>
 </div>
 
@@ -636,6 +792,16 @@
 
 
 <script>
+// ========== 横竖屏切换自动刷新 ==========
+let lastOrientation = window.innerWidth > window.innerHeight;
+window.addEventListener('resize', () => {
+    const nowLandscape = window.innerWidth > window.innerHeight;
+    if (nowLandscape !== lastOrientation) {
+        lastOrientation = nowLandscape;
+        location.reload();
+    }
+});
+
 const Storage = {
   set(key, val) {
     localStorage.setItem(key, JSON.stringify(val));
@@ -829,8 +995,16 @@ descHeader.onclick = () => {
   descBar.classList.toggle('expand');
 };
 
+// 公告栏展开
+const noticeBar = document.getElementById('noticeBar');
+const noticeHeader = document.getElementById('noticeHeader');
+noticeHeader.onclick = () => {
+  noticeBar.classList.toggle('expand');
+};
+
 const list = document.getElementById('list');
 const miniNav = document.querySelector('.mini-nav');
+const cateGrid = document.getElementById('cateGrid');
 let cur = 0;
 const items = document.querySelectorAll('.item');
 function showItems() {
@@ -848,12 +1022,16 @@ window.addEventListener('scroll', () => {
   if (window.scrollY > 100) {
     carousel.classList.add('hide');
     descBar.classList.add('hide');
+    noticeBar.classList.add('hide');
+    cateGrid.classList.add('hide');
     list.classList.add('show');
     miniNav.classList.add('show');
     showItems();
   } else {
     carousel.classList.remove('hide');
     descBar.classList.remove('hide');
+    noticeBar.classList.remove('hide');
+    cateGrid.classList.remove('hide');
     list.classList.remove('show');
     miniNav.classList.remove('show');
     resetItems();
