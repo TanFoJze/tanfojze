@@ -358,6 +358,7 @@
         }
         body.light .slogan { color: #666; }
 
+        /* ========== 搜索框：毛玻璃 + 高亮文字 ========== */
         .search-row {
             width: 100%; max-width: 420px;
             display: flex; gap: 10px;
@@ -366,23 +367,35 @@
         .search-row input {
             flex: 1; padding: 14px 18px;
             border-radius: 16px; border: none;
-            background: rgba(255,255,255,0.15);
-            color: #fff; font-size: 16px; outline: none;
+            background: rgba(0,0,0,0.4);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            color: #ffffff;
+            font-size: 16px;
+            font-weight: 500;
+            outline: none;
         }
         body.light .search-row input {
-            background: #fff; color: #222;
+            background: rgba(255,255,255,0.85);
+            color: #222;
             box-shadow: 0 1px 4px #0001;
         }
         .search-row button {
             padding: 14px 16px;
             border-radius: 16px; border: none;
-            background: rgba(255,255,255,0.15);
-            color: #fff; cursor: pointer;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            color: #ffffff;
+            font-weight: 600;
+            cursor: pointer;
         }
         body.light .search-row button {
-            background: #fff; color: #222;
+            background: rgba(255,255,255,0.85);
+            color: #222;
         }
 
+        /* ========== 快捷按钮：更强模糊 + 更暗 ========== */
         .shortcuts {
             width: 100%; max-width: 420px;
             display: flex; gap: 8px;
@@ -393,13 +406,17 @@
         .shortcuts::-webkit-scrollbar { height: 0; }
         .shortcut {
             min-width: 60px; padding: 10px 6px;
-            background: rgba(255,255,255,0.12);
+            background: rgba(0,0,0,0.45);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             border-radius: 12px; text-align: center;
-            font-size: 12px; color: #ccc;
+            font-size: 12px; color: #fff;
+            font-weight: 500;
             white-space: nowrap;
         }
         body.light .shortcut {
-            background: #fff; color: #444;
+            background: rgba(255,255,255,0.85);
+            color: #222;
         }
 
         .scroll-tip {
@@ -452,6 +469,7 @@
             }
         }
 
+        /* ========== 暗色模式下所有面板更暗 ========== */
         .desc-bar,
         .notice-bar,
         .cate-grid {
@@ -459,7 +477,9 @@
             max-width: 420px;
             margin-bottom: 16px;
             border-radius: 12px;
-            background: rgba(255,255,255,0.05);
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             overflow: hidden;
             transition: all 0.3s ease;
         }
@@ -476,17 +496,18 @@
             align-items: center;
             cursor: pointer;
             font-weight: 500;
+            color: #fff;
         }
         .desc-content,
         .notice-content {
             padding: 0 16px 16px;
             font-size: 14px;
             line-height: 1.6;
-            color: #ccc;
+            color: #ffffff;
         }
         body.light .desc-content,
         body.light .notice-content {
-            color: #444;
+            color: #222;
         }
         .desc-bar.expand,
         .notice-bar.expand {
@@ -504,15 +525,18 @@
             min-width: 70px;
             padding: 10px 6px;
             border-radius: 12px;
-            background: rgba(255,255,255,0.1);
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             text-align: center;
             font-size: 12px;
             color: #fff;
+            font-weight: 500;
             cursor: pointer;
             white-space: nowrap;
         }
         body.light .cate-btn {
-            background: #fff;
+            background: rgba(255,255,255,0.85);
             color: #222;
         }
 
@@ -635,7 +659,11 @@
         .item {
             padding: 18px;
             border-radius: 16px;
-            background: rgba(255,255,255,0.1);
+            background: rgba(0,0,0,0.4);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            color: #fff;
+            font-weight: 500;
             opacity: 0;
             transform: translateY(30px);
             transition: all 0.5s ease;
@@ -644,7 +672,10 @@
             display: grid;
             place-items: center;
         }
-        body.light .item { background: #fff; }
+        body.light .item {
+            background: rgba(255,255,255,0.9);
+            color: #222;
+        }
         .item.show { opacity: 1; transform: translateY(0); }
 
         .carousel.hide,
@@ -754,7 +785,7 @@
             <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
         </div>
         <div class="top-icon-btn" id="topNoticeBtn" title="网站公告">
-            <svg viewBox="0 0 24 24"><polyline points="11 5 6 9 2 5"></polyline><path d="M22 12v7a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5"></path></svg>
+            <svg viewBox="0 0 24 24"><polyline points="11 5 6 9 2 5"></polyline><path d="M22 12v7a2 2 0 01-2 2H4a2 2 0 01-2-2V5"></path></svg>
         </div>
         <div class="top-icon-btn" id="topCateBtn" title="资源分类">
             <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
@@ -881,6 +912,18 @@
     <source src="bgm.mp3" type="audio/mpeg">
 
 <script>
+// ========== 下拉到顶刷新 ==========
+let touchStartY = 0;
+window.addEventListener('touchstart', (e) => {
+    touchStartY = e.touches[0].clientY;
+});
+window.addEventListener('touchend', (e) => {
+    const delta = e.changedTouches[0].clientY - touchStartY;
+    if (window.scrollY === 0 && delta > 110) {
+        location.reload();
+    }
+});
+
 let lastOrientation = window.innerWidth > window.innerHeight;
 window.addEventListener('resize', () => {
     const nowLandscape = window.innerWidth > window.innerHeight;
