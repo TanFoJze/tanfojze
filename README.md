@@ -5,7 +5,6 @@
 
 ![bkgld000titlemd000](https://github.com/TanFoJze/tfjMarkDown000/raw/main/bkgld000titlemd000.jpg)
 
-</div>
 
 Gatehumex官网
 https://
@@ -26,6 +25,6 @@ Tanfojze莱达游戏规划
 个人声明
 
 
-<div align="center">
+
 ![动图1770305738747](https://raw.githubusercontent.com/TanFoJze/tfjMarkDown000/main/1770305738747.gif)
 </div>
