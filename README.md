@@ -1,10 +1,11 @@
 <div align="center">
-(https://raw.githubusercontent.com/TanFoJze/tfjMarkDown000/main/IMG_20260403_184615.jpg)
+![图片bkgld000titlemd000](https://github.com/TanFoJze/tfjMarkDown000/raw/main/bkgld000titlemd000.jpg)
+
 
 # Longing for Tomorrow
 ### 向往明天   TanFoJze
 
-![动图](https://raw.githubusercontent.com/TanFoJze/tfjMarkDown000/main/1770305738747.gif)
+![动图1770305738747](https://raw.githubusercontent.com/TanFoJze/tfjMarkDown000/main/1770305738747.gif)
 
 
 </div>
