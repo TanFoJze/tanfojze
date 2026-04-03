@@ -1,9 +1,7 @@
 <div align="center">
 
-# 自导自演着老旧胶卷中复古的故事 
-
+# Longing for Tomorrow
 TanFoJze
-
 ### 向往明天
 
 
