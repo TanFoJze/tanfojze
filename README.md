@@ -1,8 +1,8 @@
 <div align="center">
 
-# <font color="#4285F4">Longing for Tomorrow</font>
+# Longing for Tomorrow
 ### 向往明天
-TanFoJze
+<font color="#4285F4">TanFoJze</font>
 
 
 
