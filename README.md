@@ -1,4 +1,4 @@
-## TanFoJze 个人网站仓库
+## TanFoJze
 # Hope for a brighter tomorrow. 
   
   开发分享
