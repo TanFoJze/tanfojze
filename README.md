@@ -3,7 +3,7 @@
 # Longing for Tomorrow
 ### 向往明天   TanFoJze
 
-![bkgld000titlemd000](https://github.com/TanFoJze/tfjMarkDown000/raw/main/bkgld000titlemd000.jpg)
+![bkgld000titlemd000](https://raw.githubusercontent.com/TanFoJze/tfjMarkDown000/main/bkgld000titlemd000.jpg)
 
 
 Gatehumex官网
