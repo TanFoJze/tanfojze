@@ -1,5 +1,5 @@
 <div align="center">
-![标题图片000](https://raw.githubusercontent.com/TanFoJze/tfjMarkDown000/main/IMG_20260403_184615.jpg)
+![图片](https://raw.githubusercontent.com/TanFoJze/tfjMarkDown000/main/IMG_20260403_184615.jpg)
 
 # Longing for Tomorrow
 ### 向往明天   TanFoJze
