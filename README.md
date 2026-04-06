@@ -13,6 +13,8 @@ TanFoJze个人开发网站
 https://tanfojze.github.io/tanfojze/
 
 TanFoJze网页游戏网站
+https://tanfojze.github.io/games/
+
 
 TanFoJze个人云盘链接
 
