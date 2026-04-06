@@ -26,5 +26,5 @@ Tanfojze莱达游戏规划
 
 
 
-![动图1770305738747](https://raw.githubusercontent.com/TanFoJze/tfjMarkDown000/main/1770305738747.gif)
+# ![动图1770305738747](https://raw.githubusercontent.com/TanFoJze/tfjMarkDown000/main/1770305738747.gif)
 </div>
